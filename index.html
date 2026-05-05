@@ -1,108 +1,190 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SDR Portal</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <style>
-    body {
-      background: linear-gradient(#3b2a1a, #2b1d13);
-      color: white;
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .card {
-      background: #4a3223;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px;
-      margin-top: 10px;
-      width: 100%;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDR Portal | Soul Dust Records</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --drown-bg: #1a1412;
+            --card-bg: #2a201d;
+            --zulu-gold: #c5a059;
+            --sunset: #b3592d;
+        }
+        body {
+            background: linear-gradient(var(--drown-bg), #000);
+            color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 { font-weight: 300; letter-spacing: 3px; color: var(--zulu-gold); }
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #3a2d29;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+        input[type="file"] { margin: 20px 0; display: block; width: 100%; }
+        button {
+            background: var(--sunset);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+        }
+        button:hover { background: var(--zulu-gold); color: black; }
+        #list div {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--zulu-gold);
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>Soul Dust Records Portal</h1>
+    <h1>SOUL DUST RECORDS</h1>
 
-<div id="login">
-  <button onclick="loginGoogle()">Login with Google</button>
-</div>
+    <!-- 🔐 Login View -->
+    <div id="login" class="card">
+        <p style="text-align: center; color: var(--zulu-gold);">Artist Distribution Portal</p>
+        <button onclick="loginGoogle()">Login with Google</button>
+    </div>
 
-<div id="app" style="display:none;">
-  <div class="card">
-    <h3>Upload Track (SDR001)</h3>
-    <input type="file" id="file"/>
-    <button onclick="upload()">Upload</button>
-  </div>
+    <!-- 📂 App View -->
+    <div id="app" style="display:none; width: 100%; max-width: 400px;">
+        <div class="card">
+            <h3>Upload Track (SDR Release)</h3>
+            <p style="font-size: 0.8rem; color: #888;">Submit high-quality WAV files only.</p>
+            <input type="file" id="file" accept=".wav,.mp3"/>
+            <button id="uploadBtn" onclick="upload()">Submit to Vault</button>
+        </div>
 
-  <div class="card">
-    <h3>My Submissions</h3>
-    <div id="list"></div>
-  </div>
-</div>
+        <div class="card">
+            <h3>My Submissions</h3>
+            <div id="list">Checking vault...</div>
+            <button onclick="logout()" style="background:transparent; color:#888; font-size:0.7rem; margin-top:20px;">Sign Out</button>
+        </div>
+    </div>
 
 <script>
-const supabase = window.supabase.createClient(
-  "https://tjebjlhgnhogkipzpbna.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
-);
+    // Initialize Supabase
+    const _supabase = window.supabase.createClient(
+        "https://tjebjlhgnhogkipzpbna.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
+    );
 
-let user = null;
+    let currentUser = null;
 
-// 🔐 Google Login
-async function loginGoogle() {
-  await supabase.auth.signInWithOAuth({
-    provider: "google"
-  });
-}
+    // Check Auth Status on Load
+    _supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            currentUser = session.user;
+            document.getElementById("login").style.display = "none";
+            document.getElementById("app").style.display = "block";
+            loadSubmissions();
+        } else {
+            document.getElementById("login").style.display = "block";
+            document.getElementById("app").style.display = "none";
+        }
+    });
 
-// Check session
-supabase.auth.getSession().then(({data})=>{
-  if(data.session){
-    user = data.session.user;
-    document.getElementById("login").style.display="none";
-    document.getElementById("app").style.display="block";
-    load();
-  }
-});
-
-// 📂 Upload (temporary)
-async function upload() {
-  const file = document.getElementById("file").files[0];
-
-  if (!file) {
-    alert("Select a file first");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const res = await fetch(
-    "https://tjebjlhgnhogkipzpbna.supabase.co/functions/v1/upload-to-drive",
-    {
-      method: "POST",
-      body: formData,
+    async function loginGoogle() {
+        await _supabase.auth.signInWithOAuth({ provider: "google" });
     }
-  );
 
-  const result = await res.json();
+    async function logout() {
+        await _supabase.auth.signOut();
+        window.location.reload();
+    }
 
-  const link = result.link;
+    // 📂 Upload Logic
+    async function upload() {
+        const fileInput = document.getElementById("file");
+        const btn = document.getElementById("uploadBtn");
+        const file = fileInput.files[0];
 
-  await supabase.from("releases").insert([
-    {
-      user_id: user.id,
-      file_url: link,
-      status: "pending",
-    },
-  ]);
+        if (!file) return alert("Please select a WAV/MP3 file.");
 
-  alert("Uploaded to Drive!");
-  load();
-}
+        btn.innerText = "Uploading...";
+        btn.disabled = true;
+
+        try {
+            // 1. Send to your Edge Function
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("https://tjebjlhgnhogkipzpbna.supabase.co/functions/v1/upload-to-drive", {
+                method: "POST",
+                headers: { 'Authorization': `Bearer ${(await _supabase.auth.getSession()).data.session.access_token}` },
+                body: formData,
+            });
+
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.error || "Upload failed");
+
+            // 2. Save Reference to Database
+            const { error } = await _supabase.from("releases").insert([
+                {
+                    user_id: currentUser.id,
+                    file_url: result.link,
+                    status: "pending",
+                    label: "Soul Dust Records"
+                },
+            ]);
+
+            if (error) throw error;
+
+            alert("Track safely stored in the SDR Vault!");
+            fileInput.value = "";
+            loadSubmissions();
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + err.message);
+        } finally {
+            btn.innerText = "Submit to Vault";
+            btn.disabled = false;
+        }
+    }
+
+    // 📜 Load History
+    async function loadSubmissions() {
+        const listDiv = document.getElementById("list");
+        const { data, error } = await _supabase
+            .from("releases")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order('created_at', { ascending: false });
+
+        if (error) return listDiv.innerText = "Error loading vault.";
+        
+        if (data.length === 0) {
+            listDiv.innerText = "No tracks in vault yet.";
+            return;
+        }
+
+        listDiv.innerHTML = data.map(item => `
+            <div>
+                <strong>${item.status.toUpperCase()}</strong><br>
+                <small>${new Date(item.created_at).toLocaleDateString()}</small>
+            </div>
+        `).join("");
+    }
+</script>
+</body>
+</html>
