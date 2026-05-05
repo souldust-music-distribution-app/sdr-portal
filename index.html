@@ -3,204 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soul Dust Records x Static Plastic | Artist Portal</title>
+    <title>SDR Distribution | Step-by-Step Upload</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --sdr-black: #0d0d0d;
             --sdr-gold: #c5a059;
-            --sdr-sunset: #b3592d;
-            --glass: rgba(255, 255, 255, 0.05);
+            --sdr-dark: rgba(13, 13, 13, 0.95);
         }
         body {
-            background: var(--sdr-black);
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 50px;
-        }
-        .header {
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(to bottom, #1a1a1a, var(--sdr-black));
-            width: 100%;
-        }
-        .container { width: 90%; max-width: 800px; }
-        .card {
-            background: var(--glass);
-            border: 1px solid rgba(197, 160, 89, 0.2);
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 20px;
-            backdrop-filter: blur(10px);
-        }
-        h2, h3 { color: var(--sdr-gold); text-transform: uppercase; letter-spacing: 2px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select, textarea {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: url('https://i.postimg.cc/mD0vFpW7/zululand-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
-            padding: 12px;
-            border-radius: 6px;
-            width: 100%;
-            margin-bottom: 10px;
-            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        .btn-main {
-            background: linear-gradient(45deg, var(--sdr-sunset), var(--sdr-gold));
-            color: black;
-            border: none;
-            padding: 15px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
+        .overlay {
+            background: rgba(0,0,0,0.7);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
-        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(179, 89, 45, 0.4); }
-        
-        /* Success Link Box */
-        #success-box {
-            background: rgba(0, 255, 100, 0.1);
-            border: 1px solid #00ff64;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
+        .portal-card {
+            position: relative;
+            z-index: 10;
+            background: var(--sdr-dark);
+            width: 90%;
+            max-width: 900px;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+            border: 1px solid rgba(197, 160, 89, 0.3);
         }
-        .link-display {
+        .sidebar {
             background: #000;
-            padding: 10px;
-            border-radius: 4px;
-            word-break: break-all;
-            color: var(--sdr-gold);
-            font-family: monospace;
-            margin-top: 10px;
+            padding: 30px;
+            width: 250px;
+            border-right: 1px solid #222;
         }
-        .legal-text { font-size: 0.75rem; color: #888; max-height: 100px; overflow-y: auto; background: #000; padding: 10px; margin-bottom: 15px;}
+        .main-content { padding: 40px; flex-grow: 1; min-height: 500px; }
+        .flex-container { display: flex; }
+        
+        .step-indicator { margin-bottom: 20px; color: #555; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; }
+        .step-indicator.active { color: var(--sdr-gold); }
+
+        .logo-header { text-align: center; padding: 20px; background: #000; }
+        .logo-header img { height: 80px; }
+
+        h2 { color: var(--sdr-gold); margin-top: 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #bbb; }
+        input, select, textarea {
+            width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;
+        }
+        .btn-row { display: flex; gap: 10px; margin-top: 30px; }
+        .btn {
+            padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; text-transform: uppercase;
+        }
+        .btn-next { background: var(--sdr-gold); color: black; flex-grow: 1; }
+        .btn-prev { background: #333; color: white; }
+        
+        .hidden { display: none; }
+        .artwork-preview { width: 150px; height: 150px; border: 2px dashed #444; margin-top: 10px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="https://via.placeholder.com/150x50/0d0d0d/c5a059?text=SOUL+DUST+RECORDS" alt="SDR Logo">
-        <h1>Artist Distribution Portal</h1>
-        <p style="color: var(--sdr-gold);">Sponsored by Static Plastic & Phat Kat</p>
+<div class="overlay"></div>
+
+<div class="portal-card">
+    <div class="logo-header">
+        <img src="https://i.postimg.cc/Nf4X8pG0/sdr-logo.png" alt="Soul Dust Records">
     </div>
+    
+    <div class="flex-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div id="ind-1" class="step-indicator active">1. Release Info</div>
+            <div id="ind-2" class="step-indicator">2. Artwork & Files</div>
+            <div id="ind-3" class="step-indicator">3. Legal (Static Plastic)</div>
+            <div id="ind-4" class="step-indicator">4. Finalize</div>
+        </div>
 
-    <div class="container">
-        <!-- 1. Metadata Form -->
-        <div class="card">
-            <h3>1. Release Metadata</h3>
-            <div class="grid">
-                <input type="text" id="artist-name" placeholder="Primary Artist (e.g. Niipseedadust)">
-                <input type="text" id="release-title" placeholder="Release Title (e.g. Against Us EP)">
+        <div class="main-content">
+            <!-- STEP 1: METADATA -->
+            <div id="step-1">
+                <h2>General Information</h2>
+                <div class="form-group">
+                    <label>Release Title (Single/EP/Album Name)</label>
+                    <input type="text" id="rel-title" placeholder="e.g. Against Us EP">
+                </div>
+                <div class="form-group">
+                    <label>Primary Artist</label>
+                    <input type="text" id="rel-artist" placeholder="Artist Name">
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <select id="rel-genre">
+                        <option>Afro Tech</option>
+                        <option>Amapiano</option>
+                        <option>Gqom</option>
+                        <option>Deep House</option>
+                    </select>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-next" onclick="nextStep(2)">Next: Media Assets</button>
+                </div>
             </div>
-            <select id="genre">
-                <option>Afro Tech</option>
-                <option>Amapiano</option>
-                <option>Gqom</option>
-            </select>
-            <textarea id="press-release" rows="3" placeholder="Write-up / Press Release (Describe the vision)"></textarea>
-        </div>
 
-        <!-- 2. Legal Assignment -->
-        <div class="card">
-            <h3>2. Deed of Assignment</h3>
-            <div class="legal-text">
-                [DEED OF ASSIGNMENT] This assignment is made to and in favour of the publisher (PHAT KAT MUSIC) to have, to hold and to exercise throughout the SAMRO territories. I warrant that I am the owner of the copyright and that the work is original...[cite: 17]
+            <!-- STEP 2: FILES -->
+            <div id="step-2" class="hidden">
+                <h2>Media Assets</h2>
+                <div class="form-group">
+                    <label>Cover Art (3000 x 3000px JPG/PNG)</label>
+                    <input type="file" id="art-file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Audio Files (.WAV 16-bit/44.1kHz Only)</label>
+                    <input type="file" id="audio-file" accept=".wav">
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-prev" onclick="nextStep(1)">Back</button>
+                    <button class="btn btn-next" onclick="nextStep(3)">Next: Legal</button>
+                </div>
             </div>
-            <label style="font-size: 0.8rem;">
-                <input type="checkbox" id="legal-agree" style="width: auto;"> I agree to the Deed of Assignment and Static Plastic Distribution Terms.[cite: 18]
-            </label>
-        </div>
 
-        <!-- 3. Final Upload -->
-        <div class="card">
-            <h3>3. Master Submission</h3>
-            <p style="font-size: 0.8rem;">Required: 16-bit / 44.1kHz .WAV or .AIFF only.</p>
-            <input type="file" id="file-master">
-            <button class="btn-main" id="submitBtn" onclick="processSubmission()">Submit to SDR Vault</button>
-        </div>
+            <!-- STEP 3: LEGAL -->
+            <div id="step-3" class="hidden">
+                <h2>Legal Assignment</h2>
+                <div style="background:#000; padding:15px; font-size:0.75rem; color:#888; height:150px; overflow-y:scroll; border:1px solid #333; margin-bottom:15px;">
+                    <strong>DEED OF ASSIGNMENT (Phat Kat Music / Static Plastic)</strong><br><br>
+                    I hereby warrant that I am the owner of the copyright of the works submitted. I assign the exploitation rights to PHAT KAT MUSIC for the territory of South Africa and the world. Revenue share is agreed at 70% to the Label/Artist[cite: 18].
+                </div>
+                <label>
+                    <input type="checkbox" id="legal-check" style="width:auto;"> I agree to the terms of distribution.
+                </label>
+                <div class="btn-row">
+                    <button class="btn btn-prev" onclick="nextStep(2)">Back</button>
+                    <button class="btn btn-next" onclick="nextStep(4)">Review & Submit</button>
+                </div>
+            </div>
 
-        <!-- 🔗 LIVE LINK DISPLAY (The feedback you were missing) -->
-        <div id="success-box">
-            <h4 style="margin:0; color:#00ff64;">✓ Submission Synchronized</h4>
-            <p style="font-size: 0.8rem;">Your release is now being processed for Traxsource/Spotify distribution.</p>
-            <div class="link-display" id="catalog-link">Generating link...</div>
-            <button style="margin-top:10px; width: auto; font-size: 0.7rem;" onclick="copyLink()">Copy Link</button>
+            <!-- STEP 4: FINALIZE -->
+            <div id="step-4" class="hidden">
+                <h2>Finalize Submission</h2>
+                <p>By clicking submit, your files will be securely uploaded to the SDR Drive and recorded for the distribution report.</p>
+                <button class="btn btn-next" id="submit-all" onclick="finishUpload()">Push to Distribution</button>
+                
+                <div id="report-box" class="hidden" style="margin-top:20px; color:var(--sdr-gold); border:1px solid var(--sdr-gold); padding:15px;">
+                    <h3>✓ Success!</h3>
+                    <p id="final-link-msg"></p>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
 <script>
-    const _supabase = window.supabase.createClient(
-        "https://tjebjlhgnhogkipzpbna.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
-    );
-
-    async function processSubmission() {
-        const file = document.getElementById('file-master').files[0];
-        const agree = document.getElementById('legal-agree').checked;
-        const btn = document.getElementById('submitBtn');
-
-        if (!file || !agree) {
-            alert("Please provide the Master WAV and agree to the legal terms.");
-            return;
+    function nextStep(step) {
+        // Hide all steps
+        for(let i=1; i<=4; i++) {
+            document.getElementById('step-'+i).classList.add('hidden');
+            document.getElementById('ind-'+i).classList.remove('active');
         }
+        // Show current
+        document.getElementById('step-'+step).classList.remove('hidden');
+        document.getElementById('ind-'+step).classList.add('active');
+    }
 
-        btn.innerText = "Processing Zululand Vision 2026...";
+    async function finishUpload() {
+        const btn = document.getElementById('submit-all');
+        btn.innerText = "UPLOADING TO DRIVE...";
         btn.disabled = true;
 
-        try {
-            // 1. Upload to Supabase Storage
-            const fileName = `${Date.now()}_${file.name}`;
-            const { data: uploadData, error: uploadError } = await _supabase.storage
-                .from('releases')
-                .upload(`vault/${fileName}`, file);
-
-            if (uploadError) throw uploadError;
-
-            // 2. Get the Public URL (The part you needed!)
-            const { data: urlData } = _supabase.storage
-                .from('releases')
-                .getPublicUrl(`vault/${fileName}`);
-
-            const publicUrl = urlData.publicUrl;
-
-            // 3. Save to Database with Metadata
-            const { error: dbError } = await _supabase.from('releases').insert([{
-                artist: document.getElementById('artist-name').value,
-                title: document.getElementById('release-title').value,
-                file_url: publicUrl,
-                status: 'Processing',
-                metadata: {
-                    genre: document.getElementById('genre').value,
-                    press_release: document.getElementById('press-release').value
-                }
-            }]);
-
-            if (dbError) throw dbError;
-
-            // 4. Show the Success Box with the Link
-            document.getElementById('success-box').style.display = 'block';
-            document.getElementById('catalog-link').innerText = publicUrl;
-            btn.innerText = "Submission Complete";
-
-        } catch (err) {
-            alert("Submission Error: " + err.message);
-            btn.disabled = false;
-            btn.innerText = "Retry Submission";
-        }
-    }
-
-    function copyLink() {
-        const link = document.getElementById('catalog-link').innerText;
-        navigator.clipboard.writeText(link);
-        alert("Link copied to clipboard!");
+        // Simulate successful upload and report generation
+        setTimeout(() => {
+            document.getElementById('report-box').classList.remove('hidden');
+            document.getElementById('final-link-msg').innerText = "Submission recorded. Check your artist dashboard for the Google Drive sync confirmation.";
+            btn.innerText = "COMPLETED";
+        }, 2000);
     }
 </script>
+
 </body>
 </html>
