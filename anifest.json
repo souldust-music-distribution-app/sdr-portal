@@ -3,13 +3,15 @@
   "short_name": "SDR Portal",
   "start_url": "index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0d0d0d",
   "theme_color": "#c5a059",
   "icons": [
     {
       "src": "Soul Dust.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
