@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Portal | Soul Dust Records</title>
+    <title>SDR Admin Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -15,173 +15,158 @@
         body {
             background: linear-gradient(var(--drown-bg), #000);
             color: #f5f5f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
-        h1 { font-weight: 300; letter-spacing: 3px; color: var(--zulu-gold); }
         .card {
             background: var(--card-bg);
             padding: 30px;
             border-radius: 15px;
             border: 1px solid #3a2d29;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             margin-bottom: 20px;
         }
-        input[type="file"] { margin: 20px 0; display: block; width: 100%; }
+        input {
+            background: #111;
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
         button {
             background: var(--sunset);
             color: white;
             border: none;
             padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 5px;
             font-weight: bold;
             width: 100%;
-            transition: 0.3s;
+            cursor: pointer;
         }
         button:hover { background: var(--zulu-gold); color: black; }
+        .hidden { display: none; }
         #list div {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            border-left: 3px solid var(--zulu-gold);
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--zulu-gold);
         }
+        .status { color: var(--zulu-gold); font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>SOUL DUST RECORDS</h1>
+    <h2 style="color: var(--zulu-gold); letter-spacing: 2px;">SOUL DUST RECORDS</h2>
 
-    <!-- 🔐 Login View -->
-    <div id="login" class="card">
-        <p style="text-align: center; color: var(--zulu-gold);">Artist Distribution Portal</p>
-        <button onclick="loginGoogle()">Login with Google</button>
+    <!-- 🔒 ADMIN LOGIN -->
+    <div id="admin-gate" class="card">
+        <h3 style="text-align:center;">Admin Access</h3>
+        <input type="password" id="master-key" placeholder="Enter Admin Key">
+        <button onclick="checkAccess()">Enter Portal</button>
+        <p style="font-size: 0.7rem; text-align: center; color: #666; margin-top: 15px;">
+            Authorized Use Only: souldustrecords@gmail.com
+        </p>
     </div>
 
-    <!-- 📂 App View -->
-    <div id="app" style="display:none; width: 100%; max-width: 400px;">
+    <!-- 📂 ADMIN DASHBOARD (Hidden by default) -->
+    <div id="portal" class="hidden" style="width: 100%; max-width: 600px;">
         <div class="card">
-            <h3>Upload Track (SDR Release)</h3>
-            <p style="font-size: 0.8rem; color: #888;">Submit high-quality WAV files only.</p>
-            <input type="file" id="file" accept=".wav,.mp3"/>
-            <button id="uploadBtn" onclick="upload()">Submit to Vault</button>
+            <h3>Direct Distribution Upload</h3>
+            <p style="font-size: 0.8rem; color: #888;">File will be sent to SDR Cloud Storage.</p>
+            <input type="file" id="file-input">
+            <button id="upBtn" onclick="handleUpload()">Upload to SDR Vault</button>
         </div>
 
         <div class="card">
-            <h3>My Submissions</h3>
-            <div id="list">Checking vault...</div>
-            <button onclick="logout()" style="background:transparent; color:#888; font-size:0.7rem; margin-top:20px;">Sign Out</button>
+            <h3>Recent Label Submissions</h3>
+            <div id="submissions-list">Loading vault data...</div>
         </div>
     </div>
 
 <script>
-    // Initialize Supabase
     const _supabase = window.supabase.createClient(
         "https://tjebjlhgnhogkipzpbna.supabase.co",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
     );
 
-    let currentUser = null;
-
-    // Check Auth Status on Load
-    _supabase.auth.onAuthStateChange((event, session) => {
-        if (session) {
-            currentUser = session.user;
-            document.getElementById("login").style.display = "none";
-            document.getElementById("app").style.display = "block";
-            loadSubmissions();
+    // 1. SIMPLE ACCESS CONTROL
+    function checkAccess() {
+        const key = document.getElementById('master-key').value;
+        // Set your own secret key here
+        if (key === "SDR2026") { 
+            document.getElementById('admin-gate').classList.add('hidden');
+            document.getElementById('portal').classList.remove('hidden');
+            loadAllSubmissions();
         } else {
-            document.getElementById("login").style.display = "block";
-            document.getElementById("app").style.display = "none";
+            alert("Unauthorized Access Key.");
         }
-    });
-
-    async function loginGoogle() {
-        await _supabase.auth.signInWithOAuth({ provider: "google" });
     }
 
-    async function logout() {
-        await _supabase.auth.signOut();
-        window.location.reload();
-    }
+    // 2. ADMIN UPLOAD (Using your souldustrecords@gmail.com context)
+    async function handleUpload() {
+        const file = document.getElementById('file-input').files[0];
+        const btn = document.getElementById('upBtn');
+        if (!file) return alert("Select file first.");
 
-    // 📂 Upload Logic
-    async function upload() {
-        const fileInput = document.getElementById("file");
-        const btn = document.getElementById("uploadBtn");
-        const file = fileInput.files[0];
-
-        if (!file) return alert("Please select a WAV/MP3 file.");
-
-        btn.innerText = "Uploading...";
+        btn.innerText = "Syncing with Drive...";
         btn.disabled = true;
 
-        try {
-            // 1. Send to your Edge Function
-            const formData = new FormData();
-            formData.append("file", file);
+        const formData = new FormData();
+        formData.append("file", file);
 
+        try {
             const res = await fetch("https://tjebjlhgnhogkipzpbna.supabase.co/functions/v1/upload-to-drive", {
                 method: "POST",
-                headers: { 'Authorization': `Bearer ${(await _supabase.auth.getSession()).data.session.access_token}` },
-                body: formData,
+                body: formData
             });
+            const data = await res.json();
 
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.error || "Upload failed");
-
-            // 2. Save Reference to Database
-            const { error } = await _supabase.from("releases").insert([
-                {
-                    user_id: currentUser.id,
-                    file_url: result.link,
-                    status: "pending",
-                    label: "Soul Dust Records"
-                },
+            // Save record as Label Admin
+            await _supabase.from("releases").insert([
+                { 
+                  file_url: data.link, 
+                  status: "Admin Upload", 
+                  label: "Soul Dust Records",
+                  user_id: "ADMIN_SDR" // Tagging it as admin work
+                }
             ]);
 
-            if (error) throw error;
-
-            alert("Track safely stored in the SDR Vault!");
-            fileInput.value = "";
-            loadSubmissions();
-        } catch (err) {
-            console.error(err);
-            alert("Error: " + err.message);
+            alert("Upload Successful!");
+            loadAllSubmissions();
+        } catch (e) {
+            alert("Error: " + e.message);
         } finally {
-            btn.innerText = "Submit to Vault";
+            btn.innerText = "Upload to SDR Vault";
             btn.disabled = false;
         }
     }
 
-    // 📜 Load History
-    async function loadSubmissions() {
-        const listDiv = document.getElementById("list");
+    // 3. VIEW ALL RELEASES (Admin View)
+    async function loadAllSubmissions() {
+        const list = document.getElementById('submissions-list');
         const { data, error } = await _supabase
             .from("releases")
             .select("*")
-            .eq("user_id", currentUser.id)
             .order('created_at', { ascending: false });
 
-        if (error) return listDiv.innerText = "Error loading vault.";
+        if (error) return list.innerText = "Error accessing vault.";
         
-        if (data.length === 0) {
-            listDiv.innerText = "No tracks in vault yet.";
-            return;
-        }
-
-        listDiv.innerHTML = data.map(item => `
+        list.innerHTML = data.map(item => `
             <div>
-                <strong>${item.status.toUpperCase()}</strong><br>
-                <small>${new Date(item.created_at).toLocaleDateString()}</small>
+                <span class="status">${item.status}</span><br>
+                <small style="color:#aaa;">Catalog Reference: ${item.id.substring(0,8)}</small><br>
+                <a href="${item.file_url}" target="_blank" style="color:var(--zulu-gold); font-size:0.8rem;">View File</a>
             </div>
         `).join("");
     }
