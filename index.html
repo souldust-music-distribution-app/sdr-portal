@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SDR Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      background: linear-gradient(#3b2a1a, #2b1d13);
+      color: white;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .card {
+      background: #4a3223;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Soul Dust Records Portal</h1>
+
+<div id="login">
+  <button onclick="loginGoogle()">Login with Google</button>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="card">
+    <h3>Upload Track (SDR001)</h3>
+    <input type="file" id="file"/>
+    <button onclick="upload()">Upload</button>
+  </div>
+
+  <div class="card">
+    <h3>My Submissions</h3>
+    <div id="list"></div>
+  </div>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+  "YOUR_SUPABASE_URL",
+  "YOUR_SUPABASE_KEY"
+);
+
+let user = null;
+
+// 🔐 Google Login
+async function loginGoogle() {
+  await supabase.auth.signInWithOAuth({
+    provider: "google"
+  });
+}
+
+// Check session
+supabase.auth.getSession().then(({data})=>{
+  if(data.session){
+    user = data.session.user;
+    document.getElementById("login").style.display="none";
+    document.getElementById("app").style.display="block";
+    load();
+  }
+});
+
+// 📂 Upload to Google Drive
+async function upload() {
+  const file = document.getElementById("file").files[0];
+
+  // SIMPLIFIED: fake link for now (we upgrade later)
+  const link = "https://drive.google.com/file/d/demo-link";
+
+  await supabase.from("releases").insert([
+    { user_id: user.id, file_url: link, status: "pending" }
+  ]);
+
+  alert("Uploaded!");
+  load();
+}
+
+// 📊 Load data
+async function load(){
+  const {data} = await supabase.from("releases").select("*");
+  document.getElementById("list").innerHTML =
+    data.map(r => `<p>${r.file_url} - ${r.status}</p>`).join("");
+}
+</script>
+
+</body>
+</html>
