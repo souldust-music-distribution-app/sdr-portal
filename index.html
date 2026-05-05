@@ -75,29 +75,34 @@ supabase.auth.getSession().then(({data})=>{
 async function upload() {
   const file = document.getElementById("file").files[0];
 
-  if(!file){
+  if (!file) {
     alert("Select a file first");
     return;
   }
 
-  const link = "pending-upload";
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(
+    "https://tjebjlhgnhogkipzpbna.supabase.co/functions/v1/upload-to-drive",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const result = await res.json();
+
+  const link = result.link;
 
   await supabase.from("releases").insert([
-    { user_id: user.id, file_url: link, status: "pending" }
+    {
+      user_id: user.id,
+      file_url: link,
+      status: "pending",
+    },
   ]);
 
-  alert("Uploaded!");
+  alert("Uploaded to Drive!");
   load();
 }
-
-// 📊 Load ONLY your data
-async function load(){
-  const {data} = await supabase
-    .from("releases")
-    .select("*")
-    .eq("user_id", user.id);
-
-  document.getElementById("list").innerHTML =
-    data.map(r => `<p>${r.file_url} - ${r.status}</p>`).join("");
-}
-</script>
