@@ -48,8 +48,8 @@
 
 <script>
 const supabase = window.supabase.createClient(
-  https://tjebjlhgnhogkipzpbna.supabase.co/rest/v1/,
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA
+  "https://tjebjlhgnhogkipzpbna.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
 );
 
 let user = null;
@@ -71,12 +71,16 @@ supabase.auth.getSession().then(({data})=>{
   }
 });
 
-// 📂 Upload to Google Drive
+// 📂 Upload (temporary)
 async function upload() {
   const file = document.getElementById("file").files[0];
 
-  // SIMPLIFIED: fake link for now (we upgrade later)
-  const link = "https://drive.google.com/file/d/demo-link";
+  if(!file){
+    alert("Select a file first");
+    return;
+  }
+
+  const link = "pending-upload";
 
   await supabase.from("releases").insert([
     { user_id: user.id, file_url: link, status: "pending" }
@@ -86,13 +90,14 @@ async function upload() {
   load();
 }
 
-// 📊 Load data
+// 📊 Load ONLY your data
 async function load(){
-  const {data} = await supabase.from("releases").select("*");
+  const {data} = await supabase
+    .from("releases")
+    .select("*")
+    .eq("user_id", user.id);
+
   document.getElementById("list").innerHTML =
     data.map(r => `<p>${r.file_url} - ${r.status}</p>`).join("");
 }
 </script>
-
-</body>
-</html>
