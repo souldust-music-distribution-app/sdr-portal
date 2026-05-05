@@ -3,94 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Admin Portal</title>
+    <title>Soul Dust Records x Static Plastic | Artist Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --drown-bg: #1a1412;
-            --card-bg: #2a201d;
-            --zulu-gold: #c5a059;
-            --sunset: #b3592d;
+            --sdr-black: #0d0d0d;
+            --sdr-gold: #c5a059;
+            --sdr-sunset: #b3592d;
+            --glass: rgba(255, 255, 255, 0.05);
         }
         body {
-            background: linear-gradient(var(--drown-bg), #000);
-            color: #f5f5f5;
-            font-family: sans-serif;
-            padding: 40px 20px;
+            background: var(--sdr-black);
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            padding-bottom: 50px;
         }
-        .card {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #3a2d29;
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(to bottom, #1a1a1a, var(--sdr-black));
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
         }
-        input {
-            background: #111;
-            border: 1px solid #444;
+        .container { width: 90%; max-width: 800px; }
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h2, h3 { color: var(--sdr-gold); text-transform: uppercase; letter-spacing: 2px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, textarea {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
             color: white;
             padding: 12px;
+            border-radius: 6px;
             width: 100%;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             box-sizing: border-box;
         }
-        button {
-            background: var(--sunset);
-            color: white;
+        .btn-main {
+            background: linear-gradient(45deg, var(--sdr-sunset), var(--sdr-gold));
+            color: black;
             border: none;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-        }
-        button:hover { background: var(--zulu-gold); color: black; }
-        .hidden { display: none; }
-        #list div {
-            background: rgba(0,0,0,0.3);
             padding: 15px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border-left: 4px solid var(--zulu-gold);
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
         }
-        .status { color: var(--zulu-gold); font-size: 0.8rem; font-weight: bold; }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(179, 89, 45, 0.4); }
+        
+        /* Success Link Box */
+        #success-box {
+            background: rgba(0, 255, 100, 0.1);
+            border: 1px solid #00ff64;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .link-display {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+            color: var(--sdr-gold);
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        .legal-text { font-size: 0.75rem; color: #888; max-height: 100px; overflow-y: auto; background: #000; padding: 10px; margin-bottom: 15px;}
     </style>
 </head>
 <body>
 
-    <h2 style="color: var(--zulu-gold); letter-spacing: 2px;">SOUL DUST RECORDS</h2>
-
-    <!-- 🔒 ADMIN LOGIN -->
-    <div id="admin-gate" class="card">
-        <h3 style="text-align:center;">Admin Access</h3>
-        <input type="password" id="master-key" placeholder="Enter Admin Key">
-        <button onclick="checkAccess()">Enter Portal</button>
-        <p style="font-size: 0.7rem; text-align: center; color: #666; margin-top: 15px;">
-            Authorized Use Only: souldustrecords@gmail.com
-        </p>
+    <div class="header">
+        <img src="https://via.placeholder.com/150x50/0d0d0d/c5a059?text=SOUL+DUST+RECORDS" alt="SDR Logo">
+        <h1>Artist Distribution Portal</h1>
+        <p style="color: var(--sdr-gold);">Sponsored by Static Plastic & Phat Kat</p>
     </div>
 
-    <!-- 📂 ADMIN DASHBOARD (Hidden by default) -->
-    <div id="portal" class="hidden" style="width: 100%; max-width: 600px;">
+    <div class="container">
+        <!-- 1. Metadata Form -->
         <div class="card">
-            <h3>Direct Distribution Upload</h3>
-            <p style="font-size: 0.8rem; color: #888;">File will be sent to SDR Cloud Storage.</p>
-            <input type="file" id="file-input">
-            <button id="upBtn" onclick="handleUpload()">Upload to SDR Vault</button>
+            <h3>1. Release Metadata</h3>
+            <div class="grid">
+                <input type="text" id="artist-name" placeholder="Primary Artist (e.g. Niipseedadust)">
+                <input type="text" id="release-title" placeholder="Release Title (e.g. Against Us EP)">
+            </div>
+            <select id="genre">
+                <option>Afro Tech</option>
+                <option>Amapiano</option>
+                <option>Gqom</option>
+            </select>
+            <textarea id="press-release" rows="3" placeholder="Write-up / Press Release (Describe the vision)"></textarea>
         </div>
 
+        <!-- 2. Legal Assignment -->
         <div class="card">
-            <h3>Recent Label Submissions</h3>
-            <div id="submissions-list">Loading vault data...</div>
+            <h3>2. Deed of Assignment</h3>
+            <div class="legal-text">
+                [DEED OF ASSIGNMENT] This assignment is made to and in favour of the publisher (PHAT KAT MUSIC) to have, to hold and to exercise throughout the SAMRO territories. I warrant that I am the owner of the copyright and that the work is original...[cite: 17]
+            </div>
+            <label style="font-size: 0.8rem;">
+                <input type="checkbox" id="legal-agree" style="width: auto;"> I agree to the Deed of Assignment and Static Plastic Distribution Terms.[cite: 18]
+            </label>
+        </div>
+
+        <!-- 3. Final Upload -->
+        <div class="card">
+            <h3>3. Master Submission</h3>
+            <p style="font-size: 0.8rem;">Required: 16-bit / 44.1kHz .WAV or .AIFF only.</p>
+            <input type="file" id="file-master">
+            <button class="btn-main" id="submitBtn" onclick="processSubmission()">Submit to SDR Vault</button>
+        </div>
+
+        <!-- 🔗 LIVE LINK DISPLAY (The feedback you were missing) -->
+        <div id="success-box">
+            <h4 style="margin:0; color:#00ff64;">✓ Submission Synchronized</h4>
+            <p style="font-size: 0.8rem;">Your release is now being processed for Traxsource/Spotify distribution.</p>
+            <div class="link-display" id="catalog-link">Generating link...</div>
+            <button style="margin-top:10px; width: auto; font-size: 0.7rem;" onclick="copyLink()">Copy Link</button>
         </div>
     </div>
 
@@ -100,75 +141,65 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA"
     );
 
-    // 1. SIMPLE ACCESS CONTROL
-    function checkAccess() {
-        const key = document.getElementById('master-key').value;
-        // Set your own secret key here
-        if (key === "SDR2026") { 
-            document.getElementById('admin-gate').classList.add('hidden');
-            document.getElementById('portal').classList.remove('hidden');
-            loadAllSubmissions();
-        } else {
-            alert("Unauthorized Access Key.");
+    async function processSubmission() {
+        const file = document.getElementById('file-master').files[0];
+        const agree = document.getElementById('legal-agree').checked;
+        const btn = document.getElementById('submitBtn');
+
+        if (!file || !agree) {
+            alert("Please provide the Master WAV and agree to the legal terms.");
+            return;
         }
-    }
 
-    // 2. ADMIN UPLOAD (Using your souldustrecords@gmail.com context)
-    async function handleUpload() {
-        const file = document.getElementById('file-input').files[0];
-        const btn = document.getElementById('upBtn');
-        if (!file) return alert("Select file first.");
-
-        btn.innerText = "Syncing with Drive...";
+        btn.innerText = "Processing Zululand Vision 2026...";
         btn.disabled = true;
 
-        const formData = new FormData();
-        formData.append("file", file);
-
         try {
-            const res = await fetch("https://tjebjlhgnhogkipzpbna.supabase.co/functions/v1/upload-to-drive", {
-                method: "POST",
-                body: formData
-            });
-            const data = await res.json();
+            // 1. Upload to Supabase Storage
+            const fileName = `${Date.now()}_${file.name}`;
+            const { data: uploadData, error: uploadError } = await _supabase.storage
+                .from('releases')
+                .upload(`vault/${fileName}`, file);
 
-            // Save record as Label Admin
-            await _supabase.from("releases").insert([
-                { 
-                  file_url: data.link, 
-                  status: "Admin Upload", 
-                  label: "Soul Dust Records",
-                  user_id: "ADMIN_SDR" // Tagging it as admin work
+            if (uploadError) throw uploadError;
+
+            // 2. Get the Public URL (The part you needed!)
+            const { data: urlData } = _supabase.storage
+                .from('releases')
+                .getPublicUrl(`vault/${fileName}`);
+
+            const publicUrl = urlData.publicUrl;
+
+            // 3. Save to Database with Metadata
+            const { error: dbError } = await _supabase.from('releases').insert([{
+                artist: document.getElementById('artist-name').value,
+                title: document.getElementById('release-title').value,
+                file_url: publicUrl,
+                status: 'Processing',
+                metadata: {
+                    genre: document.getElementById('genre').value,
+                    press_release: document.getElementById('press-release').value
                 }
-            ]);
+            }]);
 
-            alert("Upload Successful!");
-            loadAllSubmissions();
-        } catch (e) {
-            alert("Error: " + e.message);
-        } finally {
-            btn.innerText = "Upload to SDR Vault";
+            if (dbError) throw dbError;
+
+            // 4. Show the Success Box with the Link
+            document.getElementById('success-box').style.display = 'block';
+            document.getElementById('catalog-link').innerText = publicUrl;
+            btn.innerText = "Submission Complete";
+
+        } catch (err) {
+            alert("Submission Error: " + err.message);
             btn.disabled = false;
+            btn.innerText = "Retry Submission";
         }
     }
 
-    // 3. VIEW ALL RELEASES (Admin View)
-    async function loadAllSubmissions() {
-        const list = document.getElementById('submissions-list');
-        const { data, error } = await _supabase
-            .from("releases")
-            .select("*")
-            .order('created_at', { ascending: false });
-
-        if (error) return list.innerText = "Error accessing vault.";
-        
-        list.innerHTML = data.map(item => `
-            <div>
-                <span class="status">${item.status}</span><br>
-                <small style="color:#aaa;">Catalog Reference: ${item.id.substring(0,8)}</small><br>
-                <a href="${item.file_url}" target="_blank" style="color:var(--zulu-gold); font-size:0.8rem;">View File</a>
-            </div>
-        `).join("");
+    function copyLink() {
+        const link = document.getElementById('catalog-link').innerText;
+        navigator.clipboard.writeText(link);
+        alert("Link copied to clipboard!");
     }
 </script>
 </body>
