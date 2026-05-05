@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SDR Distribution | 2026 Portal</title>
 
     <!-- PWA & MOBILE APP SETTINGS -->
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -234,7 +234,7 @@
                 <h2 style="color: var(--sdr-gold); text-transform: uppercase;">Legal Assignment</h2>
                 <div style="background:#000; padding:20px; font-size:0.8rem; height:180px; overflow-y:scroll; border:1px solid #333; margin-bottom:20px; color: #bbb; line-height: 1.6; border-radius: 10px;">
                     <strong style="color: var(--sdr-gold);">DEED OF ASSIGNMENT (Phat Kat Music / Static Plastic)</strong><br><br>
-                    I hereby warrant that I am the owner of the copyright of the works submitted. I assign the exploitation rights to PHAT KAT MUSIC for the territory of South Africa and the world. Revenue share is agreed at 70% to the Label/Artist[cite: 17, 18]. I confirm that the audio files are high-quality 16-bit / 44.1kHz WAV files[cite: 19].
+                    I hereby warrant that I am the owner of the copyright of the works submitted. I assign the exploitation rights to PHAT KAT MUSIC for the territory of South Africa and the world. Revenue share is agreed at 70% to the Label/Artist. I confirm that the audio files are high-quality 16-bit / 44.1kHz WAV files.
                 </div>
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                     <input type="checkbox" id="legal-check" style="width:20px; height:20px; margin:0;"> I Agree to Terms
@@ -261,13 +261,21 @@
 </div>
 
 <script>
+    // --- SERVICE WORKER REGISTRATION (Essential for PWA) ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(registration => console.log('ServiceWorker registered'))
+          .catch(err => console.log('ServiceWorker registration failed: ', err));
+      });
+    }
+
     // --- ADMIN AUTH ---
     function checkAuth() {
         const pass = document.getElementById('admin-pass').value;
         const screen = document.getElementById('login-screen');
         const error = document.getElementById('error-msg');
         
-        // Locked with your requested password
         if(pass === "SDR2026") {
             screen.style.transform = "translateY(-100%)";
             setTimeout(() => screen.style.display = 'none', 800);
@@ -277,14 +285,12 @@
         }
     }
 
-    // Allow "Enter" key for password
     document.getElementById('admin-pass').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') checkAuth();
     });
 
     // --- NAVIGATION ---
     function nextStep(step) {
-        // Validation for legal checkbox
         if (step === 4 && !document.getElementById('legal-check').checked) {
             alert("Please accept the terms before proceeding.");
             return;
