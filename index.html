@@ -12,12 +12,11 @@
         
         body { 
             margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
-            background: #000 url('elephant-19.jpg') no-repeat center center fixed; 
+            background: #000 url('elephant 19.jpg') no-repeat center center fixed; 
             background-size: cover; color: white; min-height: 100vh;
             display: flex; flex-direction: column;
         }
 
-        /* Layout */
         .main-container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; width: 100%; box-sizing: border-box; }
 
         /* Sidebar Styling */
@@ -27,7 +26,6 @@
             padding: 25px; height: fit-content; backdrop-filter: blur(10px);
         }
 
-        /* Center Content */
         .content-area { flex: 2; min-width: 350px; }
 
         .glass-panel { 
@@ -39,7 +37,7 @@
         h2 { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; }
         h3 { font-size: 0.9rem; color: #888; margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        /* Sidebar Links & Price List */
+        /* Links & Tooltips */
         .tool-link { 
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px; background: rgba(255,255,255,0.03); 
@@ -54,13 +52,15 @@
             background: #111; border-radius: 15px; padding: 15px; margin-top: 20px; 
             border-left: 4px solid var(--gold); text-align: left;
         }
-        .ai-input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: var(--gold); border-radius: 8px; margin-top: 10px; }
+        #ai-response { font-size: 0.75rem; color: #bbb; min-height: 40px; margin-top: 10px; line-height: 1.4; }
+        .ai-input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: var(--gold); border-radius: 8px; margin-top: 10px; box-sizing: border-box; }
 
         /* UI Elements */
         input, select { width: 100%; padding: 15px; margin-bottom: 10px; background: #000; border: 1px solid #222; color: white; border-radius: 12px; box-sizing: border-box; }
         .btn { width: 100%; padding: 18px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; text-transform: uppercase; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
-        
+        .secondary-btn { background: transparent; border: 1px solid #444; color: #888; font-size: 0.7rem; padding: 10px; margin-top: 5px; }
+
         .step { display: none; }
         .active-step { display: block; }
         .hidden { display: none !important; }
@@ -78,53 +78,50 @@
     </div>
 
     <div id="main-portal" class="main-container hidden">
-        <!-- SIDEBAR: PRICE LIST & SAMRO LINKS -->
         <div class="sidebar">
             <img src="Soul Dust.png" alt="SDR" style="height: 50px; margin-bottom: 20px;">
             
             <h2>OFFICIAL RATES</h2>
             <div class="tool-link"><span>Mixing & Mastering</span> <span class="price">R450</span></div>
-            <div class="tool-link"><span>Graphic Design (Flyer)</span> <span class="price">R200</span></div>
-            <div class="tool-link"><span>Studio Time (per hour)</span> <span class="price">R150</span></div>
-            <div class="tool-link"><span>Exclusive Beats</span> <span class="price">R500+</span></div>
+            <div class="tool-link"><span>Graphic Design</span> <span class="price">R200</span></div>
+            <div class="tool-link"><span>Studio (Per Hour)</span> <span class="price">R150</span></div>
 
-            <h3>ARTIST REGISTRATION (RSA)</h3>
-            <a href="https://www.samro.org.za/node/14" target="_blank" class="tool-link">Register on SAMRO ↗</a>
-            <a href="https://www.capasso.co.za/membership" target="_blank" class="tool-link">Register on CAPASSO ↗</a>
-            <a href="https://www.risa.org.za/" target="_blank" class="tool-link">RiSA Membership ↗</a>
-            <a href="https://www.sampra.org.za/" target="_blank" class="tool-link">SAMPRA (Performers) ↗</a>
+            <h3>ARTIST RESOURCES (RSA)</h3>
+            <a href="https://portal.samro.org.za" target="_blank" class="tool-link">SAMRO Portal ↗</a>
+            <a href="https://portal.capasso.co.za" target="_blank" class="tool-link">CAPASSO Portal ↗</a>
+            <a href="https://risa-portal-production.netlify.app" target="_blank" class="tool-link">RiSA Portal ↗</a>
+            <a href="https://www.sampra.org.za/" target="_blank" class="tool-link">SAMPRA ↗</a>
 
             <div class="ai-chat">
-                <span style="font-size: 0.7rem; color: var(--gold); font-weight: bold;">SDR AI ASSISTANT (FREE)</span>
-                <p style="font-size: 0.75rem; margin: 5px 0;">Ask me about SAMRO, songwriting, or South African music laws.</p>
-                <input type="text" class="ai-input" placeholder="Type a question...">
+                <span style="font-size: 0.7rem; color: var(--gold); font-weight: bold;">SDR AI ASSISTANT</span>
+                <div id="ai-response">Waiting for your question...</div>
+                <input type="text" id="ai-input" class="ai-input" placeholder="Ask about royalties/labels..." onkeypress="handleAI(event)">
             </div>
         </div>
 
-        <!-- MAIN ACTION AREA -->
         <div class="content-area">
             <div class="glass-panel">
-                <button class="btn" style="background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-bottom: 25px;" onclick="installApp()">
-                    📲 INSTALL TO DESKTOP & DOWNLOAD METADATA
-                </button>
+                <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                    <button class="btn" style="flex: 1;" onclick="downloadTemplates()">📥 DOWNLOAD TEMPLATES</button>
+                    <button class="btn" style="flex: 1; background: #222; color: #fff; border: 1px solid #444;" onclick="installApp()">💻 INSTALL APP</button>
+                </div>
 
                 <div id="step-1" class="step active-step">
                     <h2>01. RELEASE SUBMISSION</h2>
-                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">ARTIST / DUO NAME</label>
-                    <input type="text" id="artist-name" placeholder="e.g. Niipseedadust">
-                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">METADATA SHEET (XLSX)</label>
+                    <input type="text" id="artist-name" placeholder="ARTIST NAME">
+                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">UPLOAD FILLED METADATA SHEET</label>
                     <input type="file" id="file-meta" accept=".xlsx">
                     <button class="btn" onclick="next(2)">NEXT: AUDIO SYNC</button>
                 </div>
 
                 <div id="step-2" class="step">
                     <h2>02. MASTER UPLOAD</h2>
-                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">MASTER WAV (HQ)</label>
+                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">MASTER WAV FILE</label>
                     <input type="file" id="file-audio" accept=".wav">
-                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">SIGNED DEED (PDF/DOC)</label>
+                    <label style="display:block; text-align:left; font-size: 0.7rem; color:#888;">UPLOAD SIGNED DEED OF ASSIGNMENT</label>
                     <input type="file" id="file-legal">
                     <button class="btn" id="sync-btn" onclick="uploadToSupabase()">PUSH TO SDR CLOUD</button>
-                    <p style="font-size: 0.7rem; color: #555; margin-top: 15px;">By pushing, you agree to Soul Dust Records Distribution Terms.</p>
+                    <button class="btn secondary-btn" onclick="next(1)">← BACK</button>
                 </div>
             </div>
         </div>
@@ -142,15 +139,39 @@
             deferredPrompt = e;
         });
 
-        async function installApp() {
-            // This now handles both install and metadata download as requested
+        function downloadTemplates() {
+            // Metadata Download
             window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx", "_blank");
-            
+            // Deed of Assignment Download
+            window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED_OF_ASSIGNMENT_SDR.docx", "_blank");
+            alert("Templates Downloading...");
+        }
+
+        async function installApp() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt = null;
             } else {
-                alert("1. Metadata Downloaded!\n2. To Install: Click the 'Install' icon in your browser URL bar.");
+                alert("Already installed or check browser address bar for the 'Install' icon.");
+            }
+        }
+
+        function handleAI(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('ai-input');
+                const resp = document.getElementById('ai-response');
+                const val = input.value.toLowerCase();
+                
+                resp.innerText = "Analyzing industry data...";
+                
+                setTimeout(() => {
+                    if(val.includes("samro")) resp.innerText = "SAMRO collects performance royalties. You need to register as a composer once you have 1 live track on radio or streaming.";
+                    else if(val.includes("risa")) resp.innerText = "RiSA issues ISRC codes. These are fingerprints for your songs. SDR handles this for you during distribution.";
+                    else if(val.includes("capasso")) resp.innerText = "CAPASSO handles mechanical royalties (when your song is reproduced/streamed). Essential for producers!";
+                    else if(val.includes("sdr")) resp.innerText = "Soul Dust Records is your partner in growth. We focus on Afro-tech, Gqom, and Amapiano dominance.";
+                    else resp.innerText = "That's a great question. For specific career advice, contact the Soul Dust Records A&R team directly.";
+                    input.value = "";
+                }, 800);
             }
         }
 
@@ -158,7 +179,7 @@
             if(document.getElementById('pass-key').value === SDR_PASS) {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-portal').classList.remove('hidden');
-            } else { alert("WRONG KEY"); }
+            } else { alert("ACCESS DENIED"); }
         }
 
         function next(s) {
@@ -170,24 +191,24 @@
             const btn = document.getElementById('sync-btn');
             const artist = document.getElementById('artist-name').value || "Unnamed";
             const files = [
-                { f: document.getElementById('file-meta').files[0], t: 'meta' },
-                { f: document.getElementById('file-audio').files[0], t: 'audio' },
-                { f: document.getElementById('file-legal').files[0], t: 'legal' }
+                { f: document.getElementById('file-meta').files[0] },
+                { f: document.getElementById('file-audio').files[0] },
+                { f: document.getElementById('file-legal').files[0] }
             ];
 
-            if (!files[0].f || !files[1].f || !files[2].f) return alert("All files required.");
+            if (!files[0].f || !files[1].f || !files[2].f) return alert("Upload all 3 required files.");
             
-            btn.disabled = true; btn.innerText = "SYNCING...";
+            btn.disabled = true; btn.innerText = "UPLOADING TO CLOUD...";
 
             try {
                 for (const item of files) {
-                    const path = `${artist}/${Date.now()}_${item.f.name}`;
+                    const path = `releases/${artist}/${Date.now()}_${item.f.name}`;
                     const { error } = await sbClient.storage.from('distribution-uploads').upload(path, item.f);
                     if (error) throw error;
                 }
-                btn.style.background = "#28a745"; btn.innerText = "SUCCESS ✓";
-                alert("Files secured in SDR Cloud.");
-            } catch (err) { alert(err.message); btn.disabled = false; btn.innerText = "RETRY"; }
+                btn.style.background = "#28a745"; btn.innerText = "RELEASE SYNCED!";
+                alert("Files secured. SDR A&R team has been notified.");
+            } catch (err) { alert(err.message); btn.disabled = false; btn.innerText = "RETRY SYNC"; }
         }
     </script>
 </body>
