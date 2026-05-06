@@ -11,17 +11,6 @@
         :root { --gold: #c5a059; --bg: #050505; --panel: rgba(15, 15, 15, 0.95); }
         
         body {
-            <!-- Bottom Sheet UI -->
-<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
-<div id="install-sheet">
-    <div class="app-icon-circle">
-        <img src="Soul Dust.png" alt="SDR" style="width: 50px;">
-    </div>
-    <h2 style="margin: 0; color: #fff;">SDR MOBILE ELITE</h2>
-    <p style="color: #888; font-size: 0.9rem; margin: 10px 0 25px;">Install the official Soul Dust Records portal for faster uploads and offline access.</p>
-    <button class="btn" onclick="triggerNativeInstall()">INSTALL NOW</button>
-    <button class="btn secondary-btn" style="border:none; margin-top:10px;" onclick="closeSheet()">MAYBE LATER</button>
-</div>
             margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
             background: #000 url('elephant 19.jpg') no-repeat center center fixed; 
             background-size: cover; color: white; min-height: 100vh;
@@ -30,7 +19,6 @@
 
         .main-container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; width: 100%; box-sizing: border-box; }
 
-        /* Sidebar Styling */
         .sidebar { 
             flex: 1; min-width: 300px; background: var(--panel); 
             border-radius: 20px; border: 1px solid rgba(197, 160, 89, 0.2); 
@@ -48,7 +36,6 @@
         h2 { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; }
         h3 { font-size: 0.9rem; color: #888; margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-        /* Links & Tooltips */
         .tool-link { 
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px; background: rgba(255,255,255,0.03); 
@@ -58,7 +45,6 @@
         .tool-link:hover { background: rgba(197, 160, 89, 0.1); border-color: var(--gold); color: var(--gold); }
         .price { font-weight: bold; color: var(--gold); }
 
-        /* AI Help Box */
         .ai-chat { 
             background: #111; border-radius: 15px; padding: 15px; margin-top: 20px; 
             border-left: 4px solid var(--gold); text-align: left;
@@ -66,7 +52,6 @@
         #ai-response { font-size: 0.75rem; color: #bbb; min-height: 40px; margin-top: 10px; line-height: 1.4; }
         .ai-input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: var(--gold); border-radius: 8px; margin-top: 10px; box-sizing: border-box; }
 
-        /* UI Elements */
         input, select { width: 100%; padding: 15px; margin-bottom: 10px; background: #000; border: 1px solid #222; color: white; border-radius: 12px; box-sizing: border-box; }
         .btn { width: 100%; padding: 18px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; text-transform: uppercase; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
@@ -75,48 +60,30 @@
         .step { display: none; }
         .active-step { display: block; }
         .hidden { display: none !important; }
+
+        /* Bottom Sheet Installer CSS */
+        #install-sheet {
+            position: fixed; bottom: -100%; left: 0; width: 100%; background: #111;
+            border-top: 3px solid var(--gold); border-radius: 25px 25px 0 0;
+            padding: 30px; z-index: 9999; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box; text-align: center; box-shadow: 0 -10px 40px rgba(0,0,0,0.9);
+        }
+        #install-sheet.show { bottom: 0; }
+        .sheet-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none; z-index: 9998;
+        }
+        .sheet-overlay.show { display: block; }
+        .app-icon-circle {
+            width: 70px; height: 70px; background: #000; border: 2px solid var(--gold);
+            border-radius: 20px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+        }
     </style>
-    /* Modern Bottom Sheet Installer */
-#install-sheet {
-    position: fixed;
-    bottom: -100%; /* Hidden by default */
-    left: 0;
-    width: 100%;
-    background: #111;
-    border-top: 3px solid var(--gold);
-    border-radius: 25px 25px 0 0;
-    padding: 30px;
-    z-index: 9999;
-    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-sizing: border-box;
-    text-align: center;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.9);
-}
-
-#install-sheet.show { bottom: 0; }
-
-.sheet-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: none;
-    z-index: 9998;
-}
-
-.sheet-overlay.show { display: block; }
-
-.app-icon-circle {
-    width: 70px; height: 70px;
-    background: #000;
-    border: 2px solid var(--gold);
-    border-radius: 20px;
-    margin: 0 auto 15px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
-}
 </head>
 <body>
 
+    <!-- Login Screen -->
     <div id="login-screen" style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%;">
         <div class="glass-panel" style="width: 400px;">
             <img src="Soul Dust.png" alt="SDR" style="height: 80px; margin-bottom: 20px;">
@@ -126,10 +93,10 @@
         </div>
     </div>
 
+    <!-- Main Portal -->
     <div id="main-portal" class="main-container hidden">
         <div class="sidebar">
             <img src="Soul Dust.png" alt="SDR" style="height: 50px; margin-bottom: 20px;">
-            
             <h2>OFFICIAL RATES</h2>
             <div class="tool-link"><span>Mixing & Mastering</span> <span class="price">R450</span></div>
             <div class="tool-link"><span>Graphic Design</span> <span class="price">R200</span></div>
@@ -176,6 +143,16 @@
         </div>
     </div>
 
+    <!-- Installer Bottom Sheet (Fixed Location) -->
+    <div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+    <div id="install-sheet">
+        <div class="app-icon-circle"><img src="Soul Dust.png" alt="SDR" style="width: 50px;"></div>
+        <h2 style="margin: 0; color: #fff;">SDR MOBILE ELITE</h2>
+        <p style="color: #888; font-size: 0.9rem; margin: 10px 0 25px;">Install the official Soul Dust Records portal for faster uploads.</p>
+        <button class="btn" onclick="triggerNativeInstall()">INSTALL NOW</button>
+        <button class="btn secondary-btn" style="border:none; margin-top:10px;" onclick="closeSheet()">MAYBE LATER</button>
+    </div>
+
     <script>
         const SUPABASE_URL = "https://tjebjlhgnhogkipzpbna.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA";
@@ -183,45 +160,34 @@
         const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let deferredPrompt;
+        const sheet = document.getElementById('install-sheet');
+        const overlay = document.getElementById('overlay');
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
         });
 
-        function downloadTemplates() {
-            // Metadata Download
-            window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx", "_blank");
-            // Deed of Assignment Download
-            window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED_OF_ASSIGNMENT_SDR.docx", "_blank");
-            alert("Templates Downloading...");
+        function installApp() {
+            if (deferredPrompt) {
+                sheet.classList.add('show');
+                overlay.classList.add('show');
+            } else {
+                alert("SDR Portal is already optimized. Check your phone settings to 'Add to Home Screen'.");
+            }
         }
 
-        async function installApp() {
+        async function triggerNativeInstall() {
+            closeSheet();
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt = null;
-            } else {
-                alert("Already installed or check browser address bar for the 'Install' icon.");
             }
         }
 
-        function handleAI(e) {
-            if (e.key === 'Enter') {
-                const input = document.getElementById('ai-input');
-                const resp = document.getElementById('ai-response');
-                const val = input.value.toLowerCase();
-                
-                resp.innerText = "Analyzing industry data...";
-                
-                setTimeout(() => {
-                    if(val.includes("samro")) resp.innerText = "SAMRO collects performance royalties. You need to register as a composer once you have 1 live track on radio or streaming.";
-                    else if(val.includes("risa")) resp.innerText = "RiSA issues ISRC codes. These are fingerprints for your songs. SDR handles this for you during distribution.";
-                    else if(val.includes("capasso")) resp.innerText = "CAPASSO handles mechanical royalties (when your song is reproduced/streamed). Essential for producers!";
-                    else if(val.includes("sdr")) resp.innerText = "Soul Dust Records is your partner in growth. We focus on Afro-tech, Gqom, and Amapiano dominance.";
-                    else resp.innerText = "That's a great question. For specific career advice, contact the Soul Dust Records A&R team directly.";
-                    input.value = "";
-                }, 800);
-            }
+        function closeSheet() {
+            sheet.classList.remove('show');
+            overlay.classList.remove('show');
         }
 
         function authenticate() {
@@ -229,6 +195,29 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-portal').classList.remove('hidden');
             } else { alert("ACCESS DENIED"); }
+        }
+
+        // ... Keep your handleAI, next, and uploadToSupabase functions the same ...
+        function downloadTemplates() {
+            window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx", "_blank");
+            window.open("https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED_OF_ASSIGNMENT_SDR.docx", "_blank");
+            alert("Templates Downloading...");
+        }
+
+        function handleAI(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('ai-input');
+                const resp = document.getElementById('ai-response');
+                const val = input.value.toLowerCase();
+                resp.innerText = "Analyzing industry data...";
+                setTimeout(() => {
+                    if(val.includes("samro")) resp.innerText = "SAMRO collects performance royalties. Register as a composer once you have 1 live track.";
+                    else if(val.includes("risa")) resp.innerText = "RiSA issues ISRC codes. SDR handles this for you during distribution.";
+                    else if(val.includes("capasso")) resp.innerText = "CAPASSO handles mechanical royalties. Essential for producers!";
+                    else resp.innerText = "For specific career advice, contact the Soul Dust Records A&R team.";
+                    input.value = "";
+                }, 800);
+            }
         }
 
         function next(s) {
@@ -244,11 +233,8 @@
                 { f: document.getElementById('file-audio').files[0] },
                 { f: document.getElementById('file-legal').files[0] }
             ];
-
             if (!files[0].f || !files[1].f || !files[2].f) return alert("Upload all 3 required files.");
-            
-            btn.disabled = true; btn.innerText = "UPLOADING TO CLOUD...";
-
+            btn.disabled = true; btn.innerText = "UPLOADING...";
             try {
                 for (const item of files) {
                     const path = `releases/${artist}/${Date.now()}_${item.f.name}`;
@@ -256,7 +242,7 @@
                     if (error) throw error;
                 }
                 btn.style.background = "#28a745"; btn.innerText = "RELEASE SYNCED!";
-                alert("Files secured. SDR A&R team has been notified.");
+                alert("Files secured.");
             } catch (err) { alert(err.message); btn.disabled = false; btn.innerText = "RETRY SYNC"; }
         }
     </script>
