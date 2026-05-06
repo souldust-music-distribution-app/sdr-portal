@@ -1,0 +1,21 @@
+let deferredPrompt;
+
+// This listens for the browser's secret install signal
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+async function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('User installed the SDR Portal');
+        }
+        deferredPrompt = null;
+    } else {
+        // If the browser hasn't triggered the signal yet, show this
+        alert("To install: \n1. Click the 'Install' icon in your browser address bar (top right).\n2. Or click the 3 dots (⋮) and select 'Install SDR Portal'.");
+    }
+}
