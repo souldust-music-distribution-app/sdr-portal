@@ -10,7 +10,18 @@
     <style>
         :root { --gold: #c5a059; --bg: #050505; --panel: rgba(15, 15, 15, 0.95); }
         
-        body { 
+        body {
+            <!-- Bottom Sheet UI -->
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+<div id="install-sheet">
+    <div class="app-icon-circle">
+        <img src="Soul Dust.png" alt="SDR" style="width: 50px;">
+    </div>
+    <h2 style="margin: 0; color: #fff;">SDR MOBILE ELITE</h2>
+    <p style="color: #888; font-size: 0.9rem; margin: 10px 0 25px;">Install the official Soul Dust Records portal for faster uploads and offline access.</p>
+    <button class="btn" onclick="triggerNativeInstall()">INSTALL NOW</button>
+    <button class="btn secondary-btn" style="border:none; margin-top:10px;" onclick="closeSheet()">MAYBE LATER</button>
+</div>
             margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; 
             background: #000 url('elephant 19.jpg') no-repeat center center fixed; 
             background-size: cover; color: white; min-height: 100vh;
