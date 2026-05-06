@@ -1,15 +1,36 @@
 {
+  "name": "Soul Dust Records | Elite Artist Portal",
   "short_name": "SDR Portal",
-  "name": "Soul Dust Records Distribution Portal",
+  "description": "Premium Music Distribution & Artist Resource Hub",
+  "start_url": "/sdr-portal/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#c5a059",
   "icons": [
     {
       "src": "Soul Dust.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "Soul Dust.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "start_url": "/sdr-portal/",
-  "display": "standalone",
-  "theme_color": "#0d0d0d",
-  "background_color": "#0d0d0d"
+  "shortcuts": [
+    {
+      "name": "Submit Music",
+      "url": "/sdr-portal/#step-1",
+      "icons": [{ "src": "Soul Dust.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "SDR AI Help",
+      "url": "/sdr-portal/#ai-input",
+      "icons": [{ "src": "Soul Dust.png", "sizes": "192x192" }]
+    }
+  ]
 }
