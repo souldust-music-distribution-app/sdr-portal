@@ -1,21 +1,41 @@
 let deferredPrompt;
+const sheet = document.getElementById('install-sheet');
+const overlay = document.getElementById('overlay');
 
-// This listens for the browser's secret install signal
+// 1. Capture the browser install signal
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    console.log("SDR Installer Ready");
 });
 
-async function installApp() {
+// 2. This runs when they click your "INSTALL APP" button
+function installApp() {
     if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            console.log('User installed the SDR Portal');
-        }
-        deferredPrompt = null;
+        // Show the cool bottom sheet
+        sheet.classList.add('show');
+        overlay.classList.add('show');
     } else {
-        // If the browser hasn't triggered the signal yet, show this
-        alert("To install: \n1. Click the 'Install' icon in your browser address bar (top right).\n2. Or click the 3 dots (⋮) and select 'Install SDR Portal'.");
+        // Fallback for iOS/Browsers that already installed it
+        alert("SDR Portal is already optimized. If on iPhone: Tap 'Share' then 'Add to Home Screen'.");
     }
+}
+
+// 3. This runs when they click "INSTALL NOW" inside the sheet
+async function triggerNativeInstall() {
+    closeSheet();
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+        console.log('Artist installed the SDR Elite App');
+    }
+    deferredPrompt = null;
+}
+
+function closeSheet() {
+    sheet.classList.remove('show');
+    overlay.classList.remove('show');
 }
