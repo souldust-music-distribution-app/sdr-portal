@@ -9,58 +9,145 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root { --gold: #c5a059; --bg: #0d0d0d; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #000 url('elephant-19.jpg') no-repeat center center fixed; background-size: cover; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .glass-panel { background: rgba(13, 13, 13, 0.98); width: 90%; max-width: 500px; padding: 40px; border-radius: 24px; border: 1px solid rgba(197, 160, 89, 0.4); text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
-        .dashboard { max-width: 800px; display: none; }
-        h2 { letter-spacing: 2px; font-weight: 800; margin-bottom: 25px; }
+        :root { --gold: #c5a059; --bg: #0d0d0d; --glass: rgba(13, 13, 13, 0.9); }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            /* Fix for background lost: Ensuring the path is correct and centered */
+            background: #000 url('elephant-19.jpg') no-repeat center center fixed; 
+            background-size: cover; 
+            color: white; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            backdrop-filter: brightness(0.4); /* Makes background image pop without washing out text */
+        }
+
+        .glass-panel { 
+            background: var(--glass); 
+            width: 90%; 
+            max-width: 600px; 
+            padding: 30px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(197, 160, 89, 0.3); 
+            text-align: center; 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+            margin: 20px 0;
+        }
+
+        .dashboard { display: none; }
+        h2 { letter-spacing: 2px; font-weight: 800; margin-bottom: 20px; color: var(--gold); }
+        
+        /* Services Section */
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            text-align: left;
+        }
+        .service-card { 
+            background: rgba(255,255,255,0.05); 
+            padding: 10px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            font-size: 0.75rem;
+        }
+        .service-card span { color: var(--gold); font-weight: bold; display: block; }
+
         label { display: block; text-align: left; font-size: 0.7rem; color: #888; text-transform: uppercase; margin: 15px 0 5px 5px; letter-spacing: 1px; }
-        input { width: 100%; padding: 16px; margin-bottom: 10px; background: #111; border: 1px solid #222; color: white; border-radius: 12px; box-sizing: border-box; font-size: 1rem; }
-        input:focus { border-color: var(--gold); outline: none; }
-        .btn { width: 100%; padding: 18px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input { 
+            width: 100%; padding: 14px; margin-bottom: 10px; background: #111; 
+            border: 1px solid #222; color: white; border-radius: 12px; box-sizing: border-box; 
+        }
+
+        .btn { 
+            width: 100%; padding: 16px; background: var(--gold); color: black; border: none; 
+            border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; 
+            text-transform: uppercase; letter-spacing: 1px; margin-top: 10px;
+        }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
-        .download-box { background: rgba(197, 160, 89, 0.05); padding: 15px; border-radius: 12px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; border: 1px dashed rgba(197, 160, 89, 0.3); }
-        .btn-small { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
+
+        .btn-installer {
+            background: transparent; border: 1px solid var(--gold); color: var(--gold);
+            margin-bottom: 20px; font-size: 0.8rem;
+        }
+
+        .download-box { 
+            background: rgba(197, 160, 89, 0.05); padding: 12px; border-radius: 12px; 
+            margin: 15px 0; display: flex; justify-content: space-between; align-items: center; 
+            border: 1px dashed rgba(197, 160, 89, 0.3); 
+        }
+        
+        .btn-small { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.65rem; font-weight: bold; }
+        
         .step { display: none; }
         .active-step { display: block; }
+
+        /* Free AI Section */
+        .ai-badge {
+            background: linear-gradient(90deg, #c5a059, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold; font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="glass-panel">
-        <img src="Soul Dust.png" alt="SDR" style="height: 60px; margin-bottom: 20px;">
+        <img src="Soul Dust.png" alt="SDR" style="height: 70px; margin-bottom: 15px;">
         <h2>SECURE ACCESS</h2>
         <input type="password" id="pass-key" placeholder="ENTER PORTAL KEY">
         <button class="btn" onclick="authenticate()">OPEN DASHBOARD</button>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- MAIN DASHBOARD -->
     <div id="main-dashboard" class="glass-panel dashboard">
+        <button class="btn btn-installer" onclick="installApp()">📲 INSTALL SDR PORTAL TO DESKTOP</button>
+        
+        <div class="ai-badge">✨ INCLUDES FREE AI MASTERING CHECK</div>
+
+        <!-- STEP 1: SERVICES & INFO -->
         <div id="step-1" class="step active-step">
-            <h2 style="color: var(--gold);">01. METADATA</h2>
+            <h2 style="margin-top: 15px;">SERVICES & FEES</h2>
+            <div class="services-grid">
+                <div class="service-card"><span>Mixing & Mastering</span>R350 / Song</div>
+                <div class="service-card"><span>Graphic Design</span>R200 / Flyer</div>
+                <div class="service-card"><span>Studio Session</span>R150 / Hour</div>
+                <div class="service-card"><span>Beats</span>From R500</div>
+            </div>
+
             <div class="download-box">
-                <span style="font-size: 0.8rem; color: #bbb;">Metadata Spreadsheet (Required)</span>
+                <span style="font-size: 0.75rem; color: #bbb;">Metadata Sheet (Required)</span>
                 <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx" class="btn-small">DOWNLOAD</a>
             </div>
+            
             <label>Artist Name</label>
             <input type="text" id="artist-name" placeholder="e.g. Niipseedadust">
-            <label>Upload Completed XLSX</label>
+            <label>Upload Completed Metadata (XLSX)</label>
             <input type="file" id="file-meta" accept=".xlsx">
-            <button class="btn" onclick="next(2)">NEXT: MEDIA & LEGAL</button>
+            
+            <button class="btn" onclick="next(2)">NEXT: MASTER SYNC</button>
         </div>
 
+        <!-- STEP 2: CLOUD UPLOAD -->
         <div id="step-2" class="step">
-            <h2 style="color: var(--gold);">02. CLOUD SYNC</h2>
+            <h2>CLOUD SYNC</h2>
             <div class="download-box">
-                <span style="font-size: 0.8rem; color: #bbb;">Deed of Assignment (Legal)</span>
+                <span style="font-size: 0.75rem; color: #bbb;">Deed of Assignment</span>
                 <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED%20OF%20ASSIGNMENT%20TEMPLATE.doc" class="btn-small">DOWNLOAD</a>
             </div>
             <label>Master WAV (16-bit / 44.1kHz)</label>
             <input type="file" id="file-audio" accept=".wav">
-            <label>Signed Deed (PDF/DOC)</label>
+            <label>Signed Legal Form</label>
             <input type="file" id="file-legal">
             <button class="btn" id="sync-btn" onclick="uploadToSupabase()">PUSH TO SDR CLOUD</button>
+            <button class="btn-small" style="margin-top:20px; border:none;" onclick="next(1)">← GO BACK</button>
         </div>
     </div>
 
@@ -69,8 +156,12 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA";
         const SDR_PASS = "SDR2026";
 
-        // Initialize Supabase correctly
         const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Installer Function
+        function installApp() {
+            alert("To install: Click the 'Install' icon in your browser address bar or 'Add to Home Screen' in your mobile menu.");
+        }
 
         function authenticate() {
             const val = document.getElementById('pass-key').value;
@@ -78,7 +169,7 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-dashboard').style.display = 'block';
             } else {
-                alert("ACCESS DENIED");
+                alert("ACCESS DENIED: Enter correct Soul Dust Key.");
             }
         }
 
@@ -91,41 +182,31 @@
             const btn = document.getElementById('sync-btn');
             const artist = document.getElementById('artist-name').value || "Unknown_Artist";
             
-            const fileMeta = document.getElementById('file-meta').files[0];
-            const fileAudio = document.getElementById('file-audio').files[0];
-            const fileLegal = document.getElementById('file-legal').files[0];
+            const files = [
+                { f: document.getElementById('file-meta').files[0], n: 'metadata' },
+                { f: document.getElementById('file-audio').files[0], n: 'master' },
+                { f: document.getElementById('file-legal').files[0], n: 'legal' }
+            ];
 
-            if (!fileMeta || !fileAudio || !fileLegal) {
-                alert("Please select all files before syncing.");
+            if (!files[0].f || !files[1].f || !files[2].f) {
+                alert("Please select all required files.");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "UPLOADING...";
-
-            const filesToUpload = [
-                { file: fileMeta, type: 'metadata' },
-                { file: fileAudio, type: 'audio' },
-                { file: fileLegal, type: 'legal' }
-            ];
+            btn.innerText = "SYNCING TO CLOUD...";
 
             try {
-                for (const item of filesToUpload) {
-                    const path = `${artist}/${Date.now()}_${item.file.name}`;
-                    const { error } = await sbClient.storage
-                        .from('distribution-uploads')
-                        .upload(path, item.file);
-                    
+                for (const item of files) {
+                    const path = `${artist}/${Date.now()}_${item.f.name}`;
+                    const { error } = await sbClient.storage.from('distribution-uploads').upload(path, item.f);
                     if (error) throw error;
                 }
-
                 btn.style.background = "#28a745";
-                btn.innerText = "SUCCESS ✓";
-                alert("All files synced to SDR Cloud successfully.");
-
+                btn.innerText = "RELEASE SYNCED ✓";
+                alert("Success! Soul Dust Records has received your masters and metadata.");
             } catch (err) {
-                console.error(err);
-                alert("Upload Failed: " + err.message);
+                alert("Error: " + err.message);
                 btn.disabled = false;
                 btn.innerText = "RETRY PUSH";
             }
