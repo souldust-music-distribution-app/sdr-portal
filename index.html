@@ -10,7 +10,7 @@
     
     <style>
         :root { --gold: #c5a059; --bg: #0d0d0d; }
-        body { margin: 0; font-family: 'Inter', -apple-system, sans-serif; background: #000 url('elephant-19.jpg') no-repeat center center fixed; background-size: cover; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #000 url('elephant-19.jpg') no-repeat center center fixed; background-size: cover; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .glass-panel { background: rgba(13, 13, 13, 0.98); width: 90%; max-width: 500px; padding: 40px; border-radius: 24px; border: 1px solid rgba(197, 160, 89, 0.4); text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
         .dashboard { max-width: 800px; display: none; }
         h2 { letter-spacing: 2px; font-weight: 800; margin-bottom: 25px; }
@@ -19,7 +19,6 @@
         input:focus { border-color: var(--gold); outline: none; }
         .btn { width: 100%; padding: 18px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .download-box { background: rgba(197, 160, 89, 0.05); padding: 15px; border-radius: 12px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; border: 1px dashed rgba(197, 160, 89, 0.3); }
         .btn-small { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
         .step { display: none; }
@@ -28,7 +27,7 @@
 </head>
 <body>
 
-    <!-- STAGE 1: AUTHENTICATION -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="glass-panel">
         <img src="Soul Dust.png" alt="SDR" style="height: 60px; margin-bottom: 20px;">
         <h2>SECURE ACCESS</h2>
@@ -36,10 +35,8 @@
         <button class="btn" onclick="authenticate()">OPEN DASHBOARD</button>
     </div>
 
-    <!-- STAGE 2: DISTRIBUTION DASHBOARD -->
+    <!-- DASHBOARD -->
     <div id="main-dashboard" class="glass-panel dashboard">
-        
-        <!-- STEP 1: METADATA -->
         <div id="step-1" class="step active-step">
             <h2 style="color: var(--gold);">01. METADATA</h2>
             <div class="download-box">
@@ -53,7 +50,6 @@
             <button class="btn" onclick="next(2)">NEXT: MEDIA & LEGAL</button>
         </div>
 
-        <!-- STEP 2: ASSETS & SYNC -->
         <div id="step-2" class="step">
             <h2 style="color: var(--gold);">02. CLOUD SYNC</h2>
             <div class="download-box">
@@ -69,12 +65,12 @@
     </div>
 
     <script>
-        // CONFIGURATION
         const SUPABASE_URL = "https://tjebjlhgnhogkipzpbna.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA";
         const SDR_PASS = "SDR2026";
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Initialize Supabase correctly
+        const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         function authenticate() {
             const val = document.getElementById('pass-key').value;
@@ -94,37 +90,42 @@
         async function uploadToSupabase() {
             const btn = document.getElementById('sync-btn');
             const artist = document.getElementById('artist-name').value || "Unknown_Artist";
-            const files = {
-                metadata: document.getElementById('file-meta').files[0],
-                audio: document.getElementById('file-audio').files[0],
-                legal: document.getElementById('file-legal').files[0]
-            };
+            
+            const fileMeta = document.getElementById('file-meta').files[0];
+            const fileAudio = document.getElementById('file-audio').files[0];
+            const fileLegal = document.getElementById('file-legal').files[0];
 
-            if (!files.metadata || !files.audio || !files.legal) {
-                alert("All files must be selected before pushing to cloud.");
+            if (!fileMeta || !fileAudio || !fileLegal) {
+                alert("Please select all files before syncing.");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "INITIALIZING TRANSMISSION...";
+            btn.innerText = "UPLOADING...";
+
+            const filesToUpload = [
+                { file: fileMeta, type: 'metadata' },
+                { file: fileAudio, type: 'audio' },
+                { file: fileLegal, type: 'legal' }
+            ];
 
             try {
-                for (const [key, file] of Object.entries(files)) {
-                    const filePath = `${artist}/${Date.now()}_${file.name}`;
-                    const { data, error } = await supabase.storage
-                        .from('distribution-uploads') // Ensure you created this Bucket in Supabase!
-                        .upload(filePath, file);
+                for (const item of filesToUpload) {
+                    const path = `${artist}/${Date.now()}_${item.file.name}`;
+                    const { error } = await sbClient.storage
+                        .from('distribution-uploads')
+                        .upload(path, item.file);
                     
                     if (error) throw error;
                 }
 
                 btn.style.background = "#28a745";
-                btn.innerText = "TRANSMISSION SUCCESSFUL ✓";
-                alert("Release synced to Soul Dust Records Cloud. Our engineers will review the metadata shortly.");
+                btn.innerText = "SUCCESS ✓";
+                alert("All files synced to SDR Cloud successfully.");
 
             } catch (err) {
                 console.error(err);
-                alert("Upload Error: " + err.message + "\nEnsure you have created a public bucket named 'distribution-uploads' in Supabase.");
+                alert("Upload Failed: " + err.message);
                 btn.disabled = false;
                 btn.innerText = "RETRY PUSH";
             }
