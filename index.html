@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SDR Distribution | 2026 Portal</title>
+    <title>SDR Distribution | Professional Portal</title>
 
     <!-- PWA & MOBILE APP SETTINGS -->
     <link rel="manifest" href="manifest.json">
@@ -20,13 +20,14 @@
             --sdr-gold: #c5a059;
             --sdr-dark: #0d0d0d;
             --zulu-pattern: url('https://www.transparenttextures.com/patterns/az-subtle.png');
+            --glass: rgba(20, 20, 20, 0.95);
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('elephant 19.jpg') no-repeat center center fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('elephant 19.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             display: flex;
@@ -34,288 +35,235 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- LOGIN OVERLAY --- */
-        #login-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--sdr-dark);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.8s cubic-bezier(0.87, 0, 0.13, 1);
-        }
-
-        .login-card {
-            background: rgba(20,20,20,0.95);
-            padding: 40px;
-            border: 2px solid var(--sdr-gold);
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 0 40px rgba(197, 160, 89, 0.3);
-            width: 85%;
-            max-width: 400px;
-        }
-
-        /* --- PORTAL STYLES --- */
+        /* --- UI COMPONENTS --- */
         .portal-card {
-            position: relative;
-            z-index: 10;
             background: var(--sdr-dark);
             width: 95%;
-            max-width: 1000px;
+            max-width: 1100px;
+            border-radius: 24px;
+            box-shadow: 0 40px 100px rgba(0,0,0,1);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-radius: 20px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-            border: 1px solid rgba(197, 160, 89, 0.4);
-            overflow: hidden;
-            margin: 20px;
         }
 
         .header-bar {
             background: #000;
-            padding: 15px;
-            border-bottom: 2px solid var(--sdr-gold);
+            padding: 20px;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.5);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .header-bar img { height: 70px; transition: 0.5s; }
+        .header-bar img { height: 50px; }
 
-        .flex-container { display: flex; flex-direction: row; min-height: 550px; }
+        .flex-container { display: flex; min-height: 600px; }
 
         .sidebar {
             background: #050505;
-            padding: 40px 20px;
-            width: 250px;
-            border-right: 1px solid #222;
+            padding: 40px 30px;
+            width: 260px;
+            border-right: 1px solid #1a1a1a;
         }
 
         .step-indicator { 
-            margin-bottom: 30px; 
-            color: #444; 
-            font-weight: 900; 
-            font-size: 0.75rem; 
+            margin-bottom: 35px; 
+            color: #555; 
+            font-weight: 700; 
+            font-size: 0.8rem; 
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.4s;
-            position: relative;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .step-indicator.active { 
-            color: var(--sdr-gold); 
-            text-shadow: 0 0 10px rgba(197, 160, 89, 0.5); 
-        }
+        .step-indicator.active { color: var(--sdr-gold); }
 
         .main-content { 
-            padding: 40px; 
+            padding: 50px; 
             flex-grow: 1; 
             background-image: var(--zulu-pattern);
-            background-color: #0a0a0a;
+            background-color: #080808;
         }
 
-        /* --- ANIMATED BUTTONS --- */
-        .btn {
-            padding: 16px 30px;
-            border-radius: 50px;
-            cursor: pointer;
+        /* --- DOWNLOAD HUB --- */
+        .download-box {
+            background: rgba(197, 160, 89, 0.1);
+            border: 1px dashed var(--sdr-gold);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-download {
+            background: transparent;
+            border: 1px solid var(--sdr-gold);
+            color: var(--sdr-gold);
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.75rem;
             font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-download:hover { background: var(--sdr-gold); color: black; }
+
+        /* --- FORMS --- */
+        label { display: block; font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        input, select {
+            width: 100%; padding: 16px; background: #111; border: 1px solid #222; 
+            color: white; border-radius: 12px; margin-bottom: 25px; font-size: 1rem;
+        }
+        input:focus { border-color: var(--sdr-gold); outline: none; background: #000; }
+
+        .btn-next {
+            background: var(--sdr-gold);
+            color: black;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-weight: 800;
             border: none;
+            cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 0.85rem;
+            transition: 0.3s;
+            width: 100%;
         }
 
-        .btn-next { 
-            background: var(--sdr-gold); 
-            color: black; 
-            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
-        }
-
-        .btn:active { transform: scale(0.90); }
-        .btn:hover { 
-            box-shadow: 0 8px 25px rgba(197, 160, 89, 0.5); 
-            letter-spacing: 2px;
-            filter: brightness(1.1);
-        }
-
-        input, select, textarea {
-            width: 100%; padding: 15px; background: #000; border: 1px solid #333; 
-            color: white; border-radius: 10px; margin-bottom: 20px;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-
-        input:focus { border-color: var(--sdr-gold); outline: none; }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.4); }
 
         .hidden { display: none; }
 
-        /* Responsive Mobile Fix */
         @media (max-width: 768px) {
             .flex-container { flex-direction: column; }
-            .sidebar { 
-                width: 100%; padding: 15px; border-right: none; border-bottom: 1px solid #222; 
-                display: flex; justify-content: space-around;
-            }
-            .step-indicator { margin-bottom: 0; font-size: 0.6rem; text-align: center; }
-            .main-content { padding: 30px 20px; }
-            .portal-card { margin: 10px; width: 95%; }
+            .sidebar { width: 100%; padding: 20px; border-right: none; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-around; }
+            .step-indicator { margin-bottom: 0; font-size: 0.6rem; }
+            .main-content { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
-<!-- 1. ADMIN LOGIN SCREEN -->
-<div id="login-screen">
-    <div class="login-card">
-        <img src="Soul Dust.png" alt="SDR Logo" style="height: 100px; margin-bottom: 20px;">
-        <h2 style="color: var(--sdr-gold); margin-bottom: 25px; letter-spacing: 2px;">SECURE ACCESS</h2>
-        <input type="password" id="admin-pass" placeholder="Enter Password" style="text-align: center;">
-        <button class="btn btn-next" style="width: 100%;" onclick="checkAuth()">Open Dashboard</button>
-        <p id="error-msg" style="color: #ff4d4d; margin-top: 15px; font-size: 0.8rem; font-weight: bold;" class="hidden">Access Denied: Try Again</p>
-    </div>
-</div>
-
-<!-- 2. MAIN PORTAL -->
 <div class="portal-card">
     <div class="header-bar">
         <img src="Soul Dust.png" alt="Soul Dust Records">
+        <span style="font-size: 0.7rem; color: var(--sdr-gold); letter-spacing: 2px;">DISTRIBUTION PORTAL v2.6</span>
     </div>
     
     <div class="flex-container">
-        <!-- Sidebar Navigation -->
+        <!-- Progress Sidebar -->
         <div class="sidebar">
-            <div id="ind-1" class="step-indicator active">1. Metadata</div>
-            <div id="ind-2" class="step-indicator">2. Media</div>
-            <div id="ind-3" class="step-indicator">3. Legal</div>
-            <div id="ind-4" class="step-indicator">4. Sync</div>
+            <div id="ind-1" class="step-indicator active">01 METADATA</div>
+            <div id="ind-2" class="step-indicator">02 MEDIA</div>
+            <div id="ind-3" class="step-indicator">03 LEGAL</div>
+            <div id="ind-4" class="step-indicator">04 SYNC</div>
         </div>
 
         <div class="main-content">
+            
             <!-- STEP 1: METADATA -->
             <div id="step-1">
-                <h2 style="color: var(--sdr-gold); text-transform: uppercase;">Release Details</h2>
-                <label style="color: #888; font-size: 0.8rem;">Primary Artist</label>
+                <h2 style="margin-top: 0; letter-spacing: 1px;">RELEASE METADATA</h2>
+                <div class="download-box">
+                    <div>
+                        <strong style="display:block; font-size: 0.85rem;">Metadata Spreadsheet</strong>
+                        <span style="font-size: 0.7rem; color: #888;">Required for Static Plastic delivery</span>
+                    </div>
+                    <a href="https://github.com/souldust-music-distribution-app/sdr-portal/raw/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx" class="btn-download">DOWNLOAD</a>
+                </div>
+
+                <label>Primary Artist Name</label>
                 <input type="text" id="rel-artist" placeholder="e.g. Niipseedadust">
-                <label style="color: #888; font-size: 0.8rem;">Project Title</label>
-                <input type="text" id="rel-title" placeholder="Against Us EP">
-                <label style="color: #888; font-size: 0.8rem;">Select Genre</label>
-                <select id="rel-genre">
-                    <option>Afro Tech</option>
-                    <option>Amapiano</option>
-                    <option>Gqom</option>
-                    <option>Deep House</option>
-                </select>
-                <button class="btn btn-next" style="width: 100%; margin-top: 10px;" onclick="nextStep(2)">Proceed to Media</button>
+                
+                <label>Upload Completed Metadata Sheet (XLSX)</label>
+                <input type="file" id="meta-file" accept=".xlsx">
+
+                <button class="btn-next" onclick="nextStep(2)">Proceed to Media Assets</button>
             </div>
 
             <!-- STEP 2: MEDIA -->
             <div id="step-2" class="hidden">
-                <h2 style="color: var(--sdr-gold); text-transform: uppercase;">Media Assets</h2>
-                <label style="color: #888; font-size: 0.8rem;">Cover Art (3000x3000px JPG)</label>
-                <input type="file" id="art-file" accept="image/jpeg">
-                <label style="color: #888; font-size: 0.8rem;">Master Audio (WAV 44.1kHz)</label>
+                <h2 style="margin-top: 0;">MEDIA ASSETS</h2>
+                <label>Master WAV (16-bit / 44.1kHz)</label>
                 <input type="file" id="audio-file" accept=".wav">
-                <div style="display:flex; gap: 15px;">
-                    <button class="btn" style="background:#222; color:white; flex: 1;" onclick="nextStep(1)">Back</button>
-                    <button class="btn btn-next" style="flex: 2;" onclick="nextStep(3)">Next: Legal</button>
+                
+                <label>Cover Art (3000x3000px JPG)</label>
+                <input type="file" id="art-file" accept="image/jpeg">
+
+                <div style="display:flex; gap: 20px;">
+                    <button onclick="nextStep(1)" style="flex:1; background: transparent; color: #555; border: 1px solid #333; cursor:pointer; border-radius:50px;">BACK</button>
+                    <button class="btn-next" style="flex:2;" onclick="nextStep(3)">Continue to Legal</button>
                 </div>
             </div>
 
             <!-- STEP 3: LEGAL -->
             <div id="step-3" class="hidden">
-                <h2 style="color: var(--sdr-gold); text-transform: uppercase;">Legal Assignment</h2>
-                <div style="background:#000; padding:20px; font-size:0.8rem; height:180px; overflow-y:scroll; border:1px solid #333; margin-bottom:20px; color: #bbb; line-height: 1.6; border-radius: 10px;">
-                    <strong style="color: var(--sdr-gold);">DEED OF ASSIGNMENT (Phat Kat Music / Static Plastic)</strong><br><br>
-                    I hereby warrant that I am the owner of the copyright of the works submitted. I assign the exploitation rights to PHAT KAT MUSIC for the territory of South Africa and the world. Revenue share is agreed at 70% to the Label/Artist. I confirm that the audio files are high-quality 16-bit / 44.1kHz WAV files.
+                <h2 style="margin-top: 0;">LEGAL ASSIGNMENT</h2>
+                <div class="download-box">
+                    <div>
+                        <strong style="display:block; font-size: 0.85rem;">Deed of Assignment Template</strong>
+                        <span style="font-size: 0.7rem; color: #888;">Proof of ownership & royalty split agreement[cite: 8]</span>
+                    </div>
+                    <a href="https://github.com/souldust-music-distribution-app/sdr-portal/raw/main/DEED%20OF%20ASSIGNMENT%20TEMPLATE.doc" class="btn-download">DOWNLOAD</a>
                 </div>
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="legal-check" style="width:20px; height:20px; margin:0;"> I Agree to Terms
+
+                <label>Upload Signed Deed of Assignment (PDF/DOC)</label>
+                <input type="file" id="legal-file" accept=".pdf,.doc,.docx">
+
+                <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; text-transform: none; color: #bbb; line-height: 1.4;">
+                    <input type="checkbox" id="legal-check" style="width: 20px; height: 20px; margin: 0;">
+                    I confirm that I have filled the Deed of Assignment correctly, including the 70% revenue split to SDR.[cite: 5, 6]
                 </label>
-                <div style="display:flex; gap: 15px; margin-top:30px;">
-                    <button class="btn" style="background:#222; color:white; flex: 1;" onclick="nextStep(2)">Back</button>
-                    <button class="btn btn-next" style="flex: 2;" onclick="nextStep(4)">Review Release</button>
+
+                <div style="display:flex; gap: 20px; margin-top: 30px;">
+                    <button onclick="nextStep(2)" style="flex:1; background: transparent; color: #555; border: 1px solid #333; cursor:pointer; border-radius:50px;">BACK</button>
+                    <button class="btn-next" style="flex:2;" onclick="nextStep(4)">Review Transmission</button>
                 </div>
             </div>
 
             <!-- STEP 4: FINALIZE -->
             <div id="step-4" class="hidden">
-                <h2 style="color: var(--sdr-gold); text-transform: uppercase;">Confirm Transmission</h2>
-                <p style="color: #888; line-height: 1.5;">Your release metadata and media will be synchronized with the Soul Dust Records Cloud and prepared for Static Plastic delivery.</p>
-                <button class="btn btn-next" style="width:100%; height: 70px; font-size: 1.1rem;" onclick="finishUpload()">Push to SDR Cloud</button>
+                <h2 style="margin-top: 0; color: var(--sdr-gold);">READY TO SYNC</h2>
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 40px;">Your release will be encrypted and transmitted to the SDR Cloud. Our engineers will verify the WAV specs and Metadata before pushing to the Static Plastic Global Network.[cite: 5]</p>
                 
-                <div id="success-box" class="hidden" style="margin-top:30px; border:2px solid var(--sdr-gold); padding:25px; text-align:center; border-radius: 15px; background: rgba(197, 160, 89, 0.05);">
-                    <h3 style="color: var(--sdr-gold); margin-bottom: 10px;">✓ TRANSMISSION SUCCESSFUL</h3>
-                    <p style="font-size: 0.9rem;">The distribution report has been generated and the SDR Drive sync is active.</p>
-                </div>
+                <button class="btn-next" id="final-btn" onclick="finishUpload()">PUSH TO CLOUD DRIVE</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- SERVICE WORKER REGISTRATION (Essential for PWA) ---
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(registration => console.log('ServiceWorker registered'))
-          .catch(err => console.log('ServiceWorker registration failed: ', err));
-      });
-    }
-
-    // --- ADMIN AUTH ---
-    function checkAuth() {
-        const pass = document.getElementById('admin-pass').value;
-        const screen = document.getElementById('login-screen');
-        const error = document.getElementById('error-msg');
-        
-        if(pass === "SDR2026") {
-            screen.style.transform = "translateY(-100%)";
-            setTimeout(() => screen.style.display = 'none', 800);
-        } else {
-            error.classList.remove('hidden');
-            document.getElementById('admin-pass').value = "";
-        }
-    }
-
-    document.getElementById('admin-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') checkAuth();
-    });
-
-    // --- NAVIGATION ---
     function nextStep(step) {
         if (step === 4 && !document.getElementById('legal-check').checked) {
-            alert("Please accept the terms before proceeding.");
+            alert("Please confirm the legal assignment first.");
             return;
         }
-
-        for(let i=1; i<=4; i++) {
-            document.getElementById('step-'+i).classList.add('hidden');
-            document.getElementById('ind-'+i).classList.remove('active');
-        }
-        document.getElementById('step-'+step).classList.remove('hidden');
-        document.getElementById('ind-'+step).classList.add('active');
-        window.scrollTo(0,0);
+        document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
+        document.querySelectorAll('.step-indicator').forEach(ind => ind.classList.remove('active'));
+        document.getElementById('step-' + step).classList.remove('hidden');
+        document.getElementById('ind-' + step).classList.add('active');
     }
 
-    // --- FINAL SYNC ---
     function finishUpload() {
-        const btn = event.target;
-        btn.innerText = "UPLOADING TO ZULULAND CLOUD...";
-        btn.style.opacity = "0.7";
+        const btn = document.getElementById('final-btn');
+        btn.innerText = "INITIALIZING ZULULAND SYNC...";
         btn.disabled = true;
-
+        btn.style.opacity = "0.5";
+        
         setTimeout(() => {
-            btn.style.display = "none";
-            document.getElementById('success-box').classList.remove('hidden');
-        }, 2500);
+            btn.innerText = "TRANSMISSION COMPLETE ✓";
+            btn.style.background = "#28a745";
+            btn.style.color = "white";
+            alert("Release successfully synced to Soul Dust Records Cloud.");
+        }, 3000);
     }
 </script>
 
