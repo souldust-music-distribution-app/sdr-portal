@@ -2,269 +2,133 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SDR Distribution | Professional Portal</title>
-
-    <!-- PWA & MOBILE APP SETTINGS -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="Soul Dust.png">
-    <link rel="icon" type="image/png" href="Soul Dust.png">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDR Distribution | Secure Cloud Portal</title>
+    
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root {
-            --sdr-gold: #c5a059;
-            --sdr-dark: #0d0d0d;
-            --zulu-pattern: url('https://www.transparenttextures.com/patterns/az-subtle.png');
-            --glass: rgba(20, 20, 20, 0.95);
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            /* Note: Renamed to elephant-19.jpg to avoid URL space errors */
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('elephant-19.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .portal-card {
-            background: var(--sdr-dark);
-            width: 95%;
-            max-width: 1100px;
-            border-radius: 24px;
-            box-shadow: 0 40px 100px rgba(0,0,0,1);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-bar {
-            background: #000;
-            padding: 20px;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-bar img { height: 50px; }
-
-        .flex-container { display: flex; min-height: 600px; }
-
-        .sidebar {
-            background: #050505;
-            padding: 40px 30px;
-            width: 260px;
-            border-right: 1px solid #1a1a1a;
-        }
-
-        .step-indicator { 
-            margin-bottom: 35px; 
-            color: #555; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .step-indicator.active { color: var(--sdr-gold); }
-
-        .main-content { 
-            padding: 50px; 
-            flex-grow: 1; 
-            background-image: var(--zulu-pattern);
-            background-color: #080808;
-        }
-
-        .download-box {
-            background: rgba(197, 160, 89, 0.1);
-            border: 1px dashed var(--sdr-gold);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-download {
-            background: transparent;
-            border: 1px solid var(--sdr-gold);
-            color: var(--sdr-gold);
-            padding: 8px 15px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-download:hover { background: var(--sdr-gold); color: black; }
-
-        label { display: block; font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
-        input, select {
-            width: 100%; padding: 16px; background: #111; border: 1px solid #222; 
-            color: white; border-radius: 12px; margin-bottom: 25px; font-size: 1rem;
-        }
-        input:focus { border-color: var(--sdr-gold); outline: none; background: #000; }
-
-        .btn-next {
-            background: var(--sdr-gold);
-            color: black;
-            padding: 18px 40px;
-            border-radius: 50px;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
-            width: 100%;
-        }
-
-        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.4); }
-
-        .hidden { display: none; }
-
-        @media (max-width: 768px) {
-            .flex-container { flex-direction: column; }
-            .sidebar { width: 100%; padding: 20px; border-right: none; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-around; }
-            .step-indicator { margin-bottom: 0; font-size: 0.6rem; }
-            .main-content { padding: 30px; }
-        }
+        :root { --gold: #c5a059; --bg: #0d0d0d; }
+        body { margin: 0; font-family: 'Inter', -apple-system, sans-serif; background: #000 url('elephant-19.jpg') no-repeat center center fixed; background-size: cover; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .glass-panel { background: rgba(13, 13, 13, 0.98); width: 90%; max-width: 500px; padding: 40px; border-radius: 24px; border: 1px solid rgba(197, 160, 89, 0.4); text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
+        .dashboard { max-width: 800px; display: none; }
+        h2 { letter-spacing: 2px; font-weight: 800; margin-bottom: 25px; }
+        label { display: block; text-align: left; font-size: 0.7rem; color: #888; text-transform: uppercase; margin: 15px 0 5px 5px; letter-spacing: 1px; }
+        input { width: 100%; padding: 16px; margin-bottom: 10px; background: #111; border: 1px solid #222; color: white; border-radius: 12px; box-sizing: border-box; font-size: 1rem; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .btn { width: 100%; padding: 18px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.3); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .download-box { background: rgba(197, 160, 89, 0.05); padding: 15px; border-radius: 12px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center; border: 1px dashed rgba(197, 160, 89, 0.3); }
+        .btn-small { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.7rem; font-weight: bold; }
+        .step { display: none; }
+        .active-step { display: block; }
     </style>
 </head>
 <body>
 
-<div class="portal-card">
-    <div class="header-bar">
-        <img src="Soul Dust.png" alt="Soul Dust Records">
-        <span style="font-size: 0.7rem; color: var(--sdr-gold); letter-spacing: 2px;">DISTRIBUTION PORTAL v2.6</span>
+    <!-- STAGE 1: AUTHENTICATION -->
+    <div id="login-screen" class="glass-panel">
+        <img src="Soul Dust.png" alt="SDR" style="height: 60px; margin-bottom: 20px;">
+        <h2>SECURE ACCESS</h2>
+        <input type="password" id="pass-key" placeholder="ENTER PORTAL KEY">
+        <button class="btn" onclick="authenticate()">OPEN DASHBOARD</button>
     </div>
-    
-    <div class="flex-container">
-        <div class="sidebar">
-            <div id="ind-1" class="step-indicator active">01 METADATA</div>
-            <div id="ind-2" class="step-indicator">02 MEDIA</div>
-            <div id="ind-3" class="step-indicator">03 LEGAL</div>
-            <div id="ind-4" class="step-indicator">04 SYNC</div>
-        </div>
 
-        <div class="main-content">
-            
-            <!-- STEP 1: METADATA -->
-            <div id="step-1">
-                <h2 style="margin-top: 0; letter-spacing: 1px;">RELEASE METADATA</h2>
-                <div class="download-box">
-                    <div>
-                        <strong style="display:block; font-size: 0.85rem;">Metadata Spreadsheet</strong>
-                        <span style="font-size: 0.7rem; color: #888;">Required for Static Plastic delivery[cite: 5]</span>
-                    </div>
-                    <!-- Direct Raw Download Link -->
-                    <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx" class="btn-download">DOWNLOAD</a>
-                </div>
-
-                <label>Primary Artist Name</label>
-                <input type="text" id="rel-artist" placeholder="e.g. Niipseedadust">
-                
-                <label>Upload Completed Metadata Sheet (XLSX)</label>
-                <input type="file" id="meta-file" accept=".xlsx">
-
-                <button class="btn-next" onclick="nextStep(2)">Proceed to Media Assets</button>
-            </div>
-
-            <!-- STEP 2: MEDIA -->
-            <div id="step-2" class="hidden">
-                <h2 style="margin-top: 0;">MEDIA ASSETS</h2>
-                <label>Master WAV (16-bit / 44.1kHz)</label>
-                <input type="file" id="audio-file" accept=".wav">
-                
-                <label>Cover Art (3000x3000px JPG)</label>
-                <input type="file" id="art-file" accept="image/jpeg">
-
-                <div style="display:flex; gap: 20px;">
-                    <button onclick="nextStep(1)" style="flex:1; background: transparent; color: #555; border: 1px solid #333; cursor:pointer; border-radius:50px;">BACK</button>
-                    <button class="btn-next" style="flex:2;" onclick="nextStep(3)">Continue to Legal</button>
-                </div>
-            </div>
-
-            <!-- STEP 3: LEGAL -->
-            <div id="step-3" class="hidden">
-                <h2 style="margin-top: 0;">LEGAL ASSIGNMENT</h2>
-                <div class="download-box">
-                    <div>
-                        <strong style="display:block; font-size: 0.85rem;">Deed of Assignment Template</strong>
-                        <span style="font-size: 0.7rem; color: #888;">Royalty split agreement (70% to Artist/Label)</span>
-                    </div>
-                    <!-- Direct Raw Download Link -->
-                    <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED%20OF%20ASSIGNMENT%20TEMPLATE.doc" class="btn-download">DOWNLOAD</a>
-                </div>
-
-                <label>Upload Signed Deed of Assignment (PDF/DOC)</label>
-                <input type="file" id="legal-file" accept=".pdf,.doc,.docx">
-
-                <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; text-transform: none; color: #bbb; line-height: 1.4;">
-                    <input type="checkbox" id="legal-check" style="width: 20px; height: 20px; margin: 0;">
-                    I confirm the Deed of Assignment is correct, including revenue splits.[cite: 5, 6]
-                </label>
-
-                <div style="display:flex; gap: 20px; margin-top: 30px;">
-                    <button onclick="nextStep(2)" style="flex:1; background: transparent; color: #555; border: 1px solid #333; cursor:pointer; border-radius:50px;">BACK</button>
-                    <button class="btn-next" style="flex:2;" onclick="nextStep(4)">Review Transmission</button>
-                </div>
-            </div>
-
-            <!-- STEP 4: FINALIZE -->
-            <div id="step-4" class="hidden">
-                <h2 style="margin-top: 0; color: var(--sdr-gold);">READY TO SYNC</h2>
-                <p style="color: #888; font-size: 0.9rem; margin-bottom: 40px;">Transmission will verify WAV specs (16-bit / 44.1kHz) before syncing to the Static Plastic network.[cite: 5]</p>
-                
-                <button class="btn-next" id="final-btn" onclick="finishUpload()">PUSH TO SDR CLOUD DRIVE</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function nextStep(step) {
-        if (step === 4 && !document.getElementById('legal-check').checked) {
-            alert("Please confirm the legal assignment first.");
-            return;
-        }
-        document.querySelectorAll('.main-content > div').forEach(div => div.classList.add('hidden'));
-        document.querySelectorAll('.step-indicator').forEach(ind => ind.classList.remove('active'));
-        document.getElementById('step-' + step).classList.remove('hidden');
-        document.getElementById('ind-' + step).classList.add('active');
-    }
-
-    function finishUpload() {
-        const btn = document.getElementById('final-btn');
-        btn.innerText = "INITIALIZING ZULULAND SYNC...";
-        btn.disabled = true;
-        btn.style.opacity = "0.5";
+    <!-- STAGE 2: DISTRIBUTION DASHBOARD -->
+    <div id="main-dashboard" class="glass-panel dashboard">
         
-        setTimeout(() => {
-            btn.innerText = "TRANSMISSION COMPLETE ✓";
-            btn.style.background = "#28a745";
-            btn.style.color = "white";
-            alert("Release successfully synced to Soul Dust Records Cloud.");
-        }, 3000);
-    }
-</script>
+        <!-- STEP 1: METADATA -->
+        <div id="step-1" class="step active-step">
+            <h2 style="color: var(--gold);">01. METADATA</h2>
+            <div class="download-box">
+                <span style="font-size: 0.8rem; color: #bbb;">Metadata Spreadsheet (Required)</span>
+                <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/Static%20Plastic%20-%20Metadata%20Sheet%20(1).xlsx" class="btn-small">DOWNLOAD</a>
+            </div>
+            <label>Artist Name</label>
+            <input type="text" id="artist-name" placeholder="e.g. Niipseedadust">
+            <label>Upload Completed XLSX</label>
+            <input type="file" id="file-meta" accept=".xlsx">
+            <button class="btn" onclick="next(2)">NEXT: MEDIA & LEGAL</button>
+        </div>
 
+        <!-- STEP 2: ASSETS & SYNC -->
+        <div id="step-2" class="step">
+            <h2 style="color: var(--gold);">02. CLOUD SYNC</h2>
+            <div class="download-box">
+                <span style="font-size: 0.8rem; color: #bbb;">Deed of Assignment (Legal)</span>
+                <a href="https://raw.githubusercontent.com/souldust-music-distribution-app/sdr-portal/main/DEED%20OF%20ASSIGNMENT%20TEMPLATE.doc" class="btn-small">DOWNLOAD</a>
+            </div>
+            <label>Master WAV (16-bit / 44.1kHz)</label>
+            <input type="file" id="file-audio" accept=".wav">
+            <label>Signed Deed (PDF/DOC)</label>
+            <input type="file" id="file-legal">
+            <button class="btn" id="sync-btn" onclick="uploadToSupabase()">PUSH TO SDR CLOUD</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION
+        const SUPABASE_URL = "https://tjebjlhgnhogkipzpbna.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqZWJqbGhnbmhvZ2tpcHpwYm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDc2MTMsImV4cCI6MjA5MzU4MzYxM30.MYCp9CEqpNLMvPxFMU7RX6hUy1ZapxTBbDdI8MCzQxA";
+        const SDR_PASS = "SDR2026";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function authenticate() {
+            const val = document.getElementById('pass-key').value;
+            if(val === SDR_PASS) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-dashboard').style.display = 'block';
+            } else {
+                alert("ACCESS DENIED");
+            }
+        }
+
+        function next(s) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active-step'));
+            document.getElementById('step-' + s).classList.add('active-step');
+        }
+
+        async function uploadToSupabase() {
+            const btn = document.getElementById('sync-btn');
+            const artist = document.getElementById('artist-name').value || "Unknown_Artist";
+            const files = {
+                metadata: document.getElementById('file-meta').files[0],
+                audio: document.getElementById('file-audio').files[0],
+                legal: document.getElementById('file-legal').files[0]
+            };
+
+            if (!files.metadata || !files.audio || !files.legal) {
+                alert("All files must be selected before pushing to cloud.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "INITIALIZING TRANSMISSION...";
+
+            try {
+                for (const [key, file] of Object.entries(files)) {
+                    const filePath = `${artist}/${Date.now()}_${file.name}`;
+                    const { data, error } = await supabase.storage
+                        .from('distribution-uploads') // Ensure you created this Bucket in Supabase!
+                        .upload(filePath, file);
+                    
+                    if (error) throw error;
+                }
+
+                btn.style.background = "#28a745";
+                btn.innerText = "TRANSMISSION SUCCESSFUL ✓";
+                alert("Release synced to Soul Dust Records Cloud. Our engineers will review the metadata shortly.");
+
+            } catch (err) {
+                console.error(err);
+                alert("Upload Error: " + err.message + "\nEnsure you have created a public bucket named 'distribution-uploads' in Supabase.");
+                btn.disabled = false;
+                btn.innerText = "RETRY PUSH";
+            }
+        }
+    </script>
 </body>
 </html>
