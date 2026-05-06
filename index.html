@@ -65,6 +65,44 @@
         .active-step { display: block; }
         .hidden { display: none !important; }
     </style>
+    /* Modern Bottom Sheet Installer */
+#install-sheet {
+    position: fixed;
+    bottom: -100%; /* Hidden by default */
+    left: 0;
+    width: 100%;
+    background: #111;
+    border-top: 3px solid var(--gold);
+    border-radius: 25px 25px 0 0;
+    padding: 30px;
+    z-index: 9999;
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.9);
+}
+
+#install-sheet.show { bottom: 0; }
+
+.sheet-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    z-index: 9998;
+}
+
+.sheet-overlay.show { display: block; }
+
+.app-icon-circle {
+    width: 70px; height: 70px;
+    background: #000;
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    margin: 0 auto 15px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+}
 </head>
 <body>
 
