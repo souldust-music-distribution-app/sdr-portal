@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Elite | Advanced Power Portal 2026</title>
+    <title>SDR Admin | Advanced Power Portal 2026</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;900&display=swap');
 
@@ -48,9 +48,7 @@
         input, select, textarea { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 12px; font-family: inherit; box-sizing: border-box; }
 
         .btn { padding: 18px 35px; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; background: linear-gradient(135deg, var(--gold), var(--deep-gold)); color: #fff; width: 100%; }
-        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
         
-        /* AI Chat UI */
         #ai-log { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); font-size: 0.9rem; }
         .ai-msg { color: var(--gold); margin-bottom: 10px; }
         .user-msg { color: #fff; margin-bottom: 10px; text-align: right; }
@@ -63,7 +61,7 @@
 
     <div id="login-layer" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
         <div class="glass-card" style="width: 350px;">
-            <h1 style="letter-spacing: 5px; font-weight: 200;">SDR <span style="font-weight: 900;">ELITE</span></h1>
+            <h1 style="letter-spacing: 5px; font-weight: 200;">SDR <span style="font-weight: 900;">REC</span></h1>
             <input type="password" id="pass-key" placeholder="ACCESS KEY" style="text-align: center;">
             <button class="btn" onclick="authenticate()">Unleash Power</button>
         </div>
@@ -71,7 +69,7 @@
 
     <div class="app-shell hidden" id="portal-shell">
         <nav class="nav-sidebar">
-            <h2 style="color: var(--gold); text-align: center; letter-spacing: 3px;">SDR</h2>
+            <h2 style="color: var(--gold); text-align: center; letter-spacing: 3px;">SDR AFRICA</h2>
             <div class="nav-item active" onclick="showPage('home')">🏠 Hub</div>
             <div class="nav-item" onclick="showPage('upload')">🚀 Release</div>
             <div class="nav-item" onclick="showPage('promote')">📣 Promo</div>
@@ -80,7 +78,7 @@
 
         <main class="main-content">
             <div id="page-home" class="page-layer active">
-                <h2>Elite Dashboard</h2>
+                <h2>Artist Dashboard</h2>
                 <div class="glass-card">
                     <h3>Status: <span style="color: var(--gold);">2026 Sync Active</span></h3>
                     <div style="display: flex; gap: 20px; margin-top: 20px;">
@@ -98,15 +96,20 @@
                 </div>
                 <div class="glass-card">
                     <div class="form-module active" id="module-a">
+                        <label>Catalog Number</label><input type="text" id="m-cat" placeholder="SDR001">
                         <label>Primary Artist</label><input type="text" id="m-artist" placeholder="Nontomby">
                         <label>Track Title</label><input type="text" id="m-title" placeholder="Impumelelo">
-                        <button class="btn" onclick="nextModule(2)">Next: Metadata</button>
+                        <button class="btn" onclick="nextModule(2)">Next: Metadata Details</button>
                     </div>
                     <div class="form-module" id="module-b">
-                        <label>Composers</label><input type="text" id="m-composer" placeholder="Sakhile Chiliza">
+                        <label>Mix Name</label><input type="text" id="m-mix" placeholder="Original Mix">
+                        <label>Composers (Full Names)</label><input type="text" id="m-composer" placeholder="Sakhile Chiliza">
                         <label>Genre</label>
-                        <select id="m-genre"><option>Afro House</option><option>Amapiano</option></select>
-                        <button class="btn" onclick="finalizeRelease()">Generate & Download CSV</button>
+                        <select id="m-genre"><option>Afro House</option><option>Amapiano</option><option>Deep House</option></select>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" style="background:#333;" onclick="nextModule(1)">Back</button>
+                            <button class="btn" onclick="finalizeRelease()">Generate CSV</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,7 +118,7 @@
                 <h2>Smart Link Scraper</h2>
                 <div class="glass-card">
                     <label>Spotify Link</label>
-                    <input type="text" id="sp-url" placeholder="https://open.spotify.com/track/...">
+                    <input type="text" id="sp-url" placeholder="Paste Spotify URL...">
                     <button class="btn" id="scrape-btn" onclick="runScraper()">Generate Multi-Links</button>
                     <div id="link-results" style="margin-top: 20px;"></div>
                 </div>
@@ -151,7 +154,10 @@
             document.querySelectorAll('.page-layer').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if(item.textContent.toLowerCase().includes(pageId)) item.classList.add('active');
+            });
         }
 
         function nextModule(step) {
@@ -160,7 +166,6 @@
             document.getElementById('dot-2').classList.toggle('active', step === 2);
         }
 
-        // --- REAL AI INTEGRATION ---
         async function talkToAI() {
             const input = document.getElementById('ai-query');
             const log = document.getElementById('ai-log');
@@ -175,62 +180,50 @@
             try {
                 const response = await fetch('https://api.openai.com/v1/chat/completions', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${CONFIG.OPENAI_KEY}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${CONFIG.OPENAI_KEY}` },
                     body: JSON.stringify({
                         model: "gpt-3.5-turbo",
-                        messages: [
-                            {role: "system", content: "You are the SDR Elite AI. You help Afro House artists with distribution, SAMRO registration, and marketing strategy. Be concise and professional."},
-                            {role: "user", content: userMsg}
-                        ]
+                        messages: [{role: "system", content: "You are the SDR Elite AI for Soul Dust Records. Help with Afro House distribution and metadata."}, {role: "user", content: userMsg}]
                     })
                 });
                 const data = await response.json();
                 log.innerHTML += `<div class="ai-msg">SDR AI: ${data.choices[0].message.content}</div>`;
                 log.scrollTop = log.scrollHeight;
-            } catch (e) {
-                log.innerHTML += `<div style="color:red">Error: AI Brain Connection Failed.</div>`;
-            }
+            } catch (e) { log.innerHTML += `<div style="color:red">Error connecting to AI brain.</div>`; }
             btn.innerText = "SEND TO BRAIN";
         }
 
-        // --- SMART LINK SCRAPER ---
         async function runScraper() {
             const url = document.getElementById('sp-url').value;
             const resDiv = document.getElementById('link-results');
-            const btn = document.getElementById('scrape-btn');
-
             if(!url.includes('spotify')) return alert("Enter a valid Spotify URL");
-            btn.innerText = "SCANNING GLOBAL STORES...";
-            resDiv.innerHTML = "";
-
+            
+            document.getElementById('scrape-btn').innerText = "SCANNING...";
             try {
                 const response = await fetch(`https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent(url)}`);
                 const data = await response.json();
+                resDiv.innerHTML = "";
                 ['appleMusic', 'youtube', 'deezer', 'tidal'].forEach(p => {
                     if(data.linksByPlatform[p]) {
                         resDiv.innerHTML += `<div class="link-pill"><span>${p.toUpperCase()}</span><a href="${data.linksByPlatform[p].url}" target="_blank" style="color:var(--gold)">LINK</a></div>`;
                     }
                 });
-                btn.innerText = "DONE";
-            } catch (e) { alert("Song not live on all stores yet."); btn.innerText = "RETRY"; }
+            } catch (e) { alert("Links not found."); }
+            document.getElementById('scrape-btn').innerText = "GENERATE MULTI-LINKS";
         }
 
-        // --- CSV EXPORTER ---
         function finalizeRelease() {
-            const rows = [
-                ["Label", "Artist", "Title", "Composer", "Genre"],
-                ["Soul Dust Records", document.getElementById('m-artist').value, document.getElementById('m-title').value, document.getElementById('m-composer').value, document.getElementById('m-genre').value]
-            ];
-            let csv = rows.map(r => r.join(",")).join("\n");
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `SDR_2026_${document.getElementById('m-title').value}.csv`;
-            a.click();
-            alert("Metadata Synced. File saved for Static Plastic.");
+            const headers = "Label,Catalog Number,Track Number,Release Title,Artist,Featured Artist,Remixer,Title,Mix,Duration,Authors,Composers,Publisher,Genre,ISRC";
+            const row = `Soul Dust Records,${document.getElementById('m-cat').value},1,${document.getElementById('m-title').value},${document.getElementById('m-artist').value},,,${document.getElementById('m-title').value},${document.getElementById('m-mix').value},05:00:00,,${document.getElementById('m-composer').value},SDR Publishing,${document.getElementById('m-genre').value},`;
+            
+            const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + row;
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `SDR_Metadata_${document.getElementById('m-title').value}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            alert("Metadata file exported for distribution!");
         }
     </script>
 </body>
