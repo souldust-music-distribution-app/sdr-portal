@@ -18,7 +18,6 @@
             --card-bg: rgba(255, 255, 255, 0.04);
             --text-light: #f4f1ea;
             --border: rgba(197, 160, 89, 0.3);
-            --cd-blue: #007bff; /* CDBaby inspired accent */
         }
 
         body {
@@ -87,7 +86,6 @@
             width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-family: inherit; box-sizing: border-box;
         }
-        input:focus { border-color: var(--gold); outline: none; background: rgba(255,255,255,0.1); }
 
         .btn {
             width: 100%; padding: 15px; background: var(--gold);
@@ -100,9 +98,10 @@
         th { text-align: left; padding: 12px; color: var(--gold); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
 
-        #ai-log { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .ai-msg { color: var(--gold); margin-bottom: 10px; font-size: 0.85rem; }
-        .user-msg { color: #fff; text-align: right; margin-bottom: 10px; font-size: 0.85rem; opacity: 0.8; }
+        .external-link-card {
+            border: 1px dashed var(--gold); background: rgba(197, 160, 89, 0.05);
+            padding: 20px; border-radius: 15px; text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -186,6 +185,21 @@
                 </div>
             </div>
 
+            <div id="page-catalog" class="page-layer">
+                <h2>Music <span style="font-weight: 200;">Catalog</span></h2>
+                <div class="external-link-card">
+                    <p style="font-size: 0.9rem; margin-bottom: 20px; color: #ccc;">Manage your live releases, view analytics, and track daily performance via our distribution partner.</p>
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 20px; display: inline-block; border: 1px solid var(--border);">
+                        <label style="margin-bottom: 5px;">Backstage Access Credentials</label>
+                        <div style="font-family: monospace; color: var(--gold); font-size: 1rem;">Password: OtdAfrica@63#</div>
+                    </div>
+                    <br>
+                    <a href="https://www.believebackstage.com" target="_blank" style="text-decoration: none;">
+                        <button class="btn" style="max-width: 300px;">Open Believe Backstage</button>
+                    </a>
+                </div>
+            </div>
+
             <div id="page-upload" class="page-layer">
                 <h2>New <span style="font-weight: 200;">Submission Form</span></h2>
                 <div class="glass-card">
@@ -212,52 +226,26 @@
                             <input type="text" placeholder="Song Name">
                             <label>Mix Name</label>
                             <input type="text" placeholder="e.g. Original Mix">
-                            <label>Duration</label>
-                            <input type="text" placeholder="00:00:00">
                         </div>
                         <div>
                             <label>Composer (Full Legal Name)</label>
                             <input type="text" placeholder="Music Creator">
                             <label>Author (Full Legal Name)</label>
                             <input type="text" placeholder="Lyricist Creator">
-                            <label>Publisher</label>
-                            <input type="text" placeholder="Soul Dust Records">
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
-                        <div>
-                            <label>Genre</label>
-                            <select>
-                                <option>Afro House</option>
-                                <option>Amapiano</option>
-                                <option>Gqom</option>
-                                <option>Soulful House</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Language of Lyrics</label>
-                            <input type="text" placeholder="Zulu / English / Instrumental">
                         </div>
                     </div>
 
                     <h3 style="color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 20px;">3. Assets & Delivery</h3>
                     <label>Audio File (.WAV 16-bit / 44.1kHz)</label>
                     <input type="file" accept=".wav">
-                    
                     <label>Cover Art (3000x3000px RGB .JPG)</label>
                     <input type="file" accept=".jpg">
 
-                    <label>Distribution Agreement Confirmation</label>
-                    <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; font-size: 0.7rem; color: #ccc; margin-bottom: 15px; border: 1px solid var(--border);">
-                        I, the undersigned, hereby confirm that I own 100% of the Master Rights for this submission. I authorize Soul Dust Records to distribute this content via Static Plastic to all global digital stores. I understand the royalty split is 80% to Artist / 20% to Label.
-                    </div>
-                    
-                    <label style="display: flex; align-items: center; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
                         <input type="checkbox" style="width: 18px; margin: 0;"> I Agree to the SDR Elite Terms of Service
                     </label>
 
-                    <button class="btn" style="margin-top: 20px;" onclick="alert('Submission Received! Finalizing Metadata...')">Submit for Review</button>
+                    <button class="btn" style="margin-top: 20px;">Submit for Review</button>
                 </div>
             </div>
 
@@ -277,7 +265,6 @@
                             Bank: NEDBANK<br>
                             Acc No: 1337406198
                         </p>
-                        <button class="btn" style="padding: 10px; font-size: 0.7rem;">Edit Details</button>
                     </div>
                 </div>
             </div>
@@ -285,12 +272,12 @@
             <div id="page-ai" class="page-layer">
                 <h2>Elite <span style="font-weight: 200;">Assistant</span></h2>
                 <div class="glass-card">
-                    <div id="ai-log">
-                        <div class="ai-msg">SDR AI: Welcome. I can help you with ISRC codes, royalty questions, or SAMRO registration help.</div>
+                    <div style="height: 200px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; color: var(--gold); font-size: 0.85rem;">
+                        SDR AI: Welcome. I can help you with ISRC codes, royalty questions, or SAMRO registration help.
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="ai-input" placeholder="Type your question..." style="margin:0">
-                        <button class="btn" style="width: 100px; padding: 0;" onclick="talkToAI()">Ask</button>
+                        <input type="text" placeholder="Type your question..." style="margin:0">
+                        <button class="btn" style="width: 100px; padding: 0;">Ask</button>
                     </div>
                 </div>
             </div>
@@ -311,18 +298,6 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             element.classList.add('active');
-        }
-
-        async function talkToAI() {
-            const input = document.getElementById('ai-input');
-            const log = document.getElementById('ai-log');
-            if(!input.value) return;
-            log.innerHTML += `<div class="user-msg">${input.value}</div>`;
-            input.value = "";
-            setTimeout(() => {
-                log.innerHTML += `<div class="ai-msg">SDR AI: Checking the 2026 distribution database for your answer...</div>`;
-                log.scrollTop = log.scrollHeight;
-            }, 800);
         }
     </script>
 </body>
