@@ -3,215 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Admin | Power Portal 2026</title>
+    <title>SDR | Cinematic Distribution</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;600;900&display=swap');
 
         :root { 
             --gold: #c5a059; 
             --deep-gold: #996515;
-            --safari-brown: #3d2b1f;
-            --glass: rgba(30, 20, 15, 0.85);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-light: #f4f1ea;
-            --border: rgba(197, 160, 89, 0.3);
+            --obsidian: #0a0a0a;
+            --glass: rgba(15, 12, 10, 0.9);
+            --border: rgba(197, 160, 89, 0.25);
         }
 
-        /* FIXED: Force hidden state to remove from layout */
-        .hidden { display: none !important; }
-        
         body {
-            margin: 0; 
-            font-family: 'Outfit', sans-serif; 
-            background: var(--safari-brown) url('elephant 19.jpg') no-repeat center center fixed; 
-            background-size: cover; 
-            color: var(--text-light); 
-            height: 100vh; 
-            overflow: hidden;
+            margin: 0; font-family: 'Outfit', sans-serif;
+            background: var(--obsidian); color: #fff;
+            height: 100vh; overflow: hidden;
         }
 
-        /* FIXED: Ensure app-shell takes full screen and doesn't overlap */
-        .app-shell { 
-            display: flex; 
-            height: 100vh; 
-            width: 100vw; 
-            gap: 20px; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            position: relative;
-            z-index: 1;
+        /* Animated Golden Background */
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #2a1f10 0%, #0a0a0a 70%);
+            z-index: -1;
         }
-        
+
+        .app-shell { display: flex; height: 100vh; width: 100vw; padding: 25px; box-sizing: border-box; gap: 25px; }
+
+        /* Cinematic Sidebar */
         .nav-sidebar { 
-            width: 280px; 
-            background: var(--glass); 
-            border-radius: 35px;
-            border: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            padding: 35px; 
-            backdrop-filter: blur(30px); 
-            box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
-            flex-shrink: 0; /* Prevents sidebar from squishing */
+            width: 300px; background: var(--glass); border-radius: 40px;
+            border: 1px solid var(--border); display: flex; flex-direction: column; 
+            padding: 40px; backdrop-filter: blur(40px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
         .nav-item { 
-            padding: 16px; margin-bottom: 12px; border-radius: 18px; cursor: pointer; 
-            transition: 0.4s; color: #bbb; display: flex; align-items: center; gap: 15px;
-            font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+            padding: 20px; margin-bottom: 15px; border-radius: 20px; cursor: pointer; 
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #888; display: flex; align-items: center; gap: 15px;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
         }
-        
+
         .nav-item:hover, .nav-item.active { 
-            background: rgba(197, 160, 89, 0.2);
-            color: var(--gold); border: 1px solid var(--gold);
+            background: linear-gradient(135deg, rgba(197, 160, 89, 0.2), transparent);
+            color: var(--gold); border: 1px solid var(--gold); transform: translateX(10px);
         }
 
+        /* Main Stage */
         .main-content { 
-            flex: 1; 
-            background: var(--glass); 
-            border-radius: 35px;
-            border: 1px solid var(--border); 
-            overflow-y: auto; 
-            padding: 50px; 
-            backdrop-filter: blur(30px);
+            flex: 1; background: var(--glass); border-radius: 40px;
+            border: 1px solid var(--border); overflow-y: auto; 
+            padding: 60px; position: relative;
         }
 
-        .page-layer { display: none; animation: fadeIn 0.8s ease; }
-        .page-layer.active { display: block; }
+        /* The Cinematic Release Form */
+        .release-stage { display: none; animation: slideUp 1s ease; }
+        .release-stage.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card { 
-            background: var(--card-bg); padding: 35px; border-radius: 25px; 
-            border: 1px solid var(--border); margin-bottom: 25px;
+        .form-step {
+            background: rgba(255,255,255,0.02); padding: 40px; border-radius: 30px;
+            border-left: 5px solid var(--gold); margin-bottom: 30px;
         }
 
-        h2 { font-size: 2.2rem; color: var(--gold); letter-spacing: 6px; margin-bottom: 30px; font-weight: 900; }
-        label { display: block; font-size: 0.7rem; color: var(--gold); margin-bottom: 8px; font-weight: 900; text-transform: uppercase; }
+        h2 { font-size: 3rem; font-weight: 900; letter-spacing: -2px; color: #fff; margin-bottom: 10px; }
+        .gold-text { color: var(--gold); text-transform: uppercase; letter-spacing: 5px; font-size: 0.7rem; display: block; margin-bottom: 20px; }
 
         input, select { 
-            width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.3); 
-            border: 1px solid var(--border); color: #fff; border-radius: 12px; font-family: inherit;
-            box-sizing: border-box;
+            background: transparent; border: none; border-bottom: 2px solid var(--border);
+            width: 100%; padding: 15px 0; color: #fff; font-size: 1.2rem; margin-bottom: 30px;
+            outline: none; transition: 0.3s;
+        }
+        input:focus { border-bottom: 2px solid var(--gold); }
+
+        .btn-luxe {
+            padding: 25px 50px; background: linear-gradient(45deg, var(--deep-gold), var(--gold));
+            border: none; border-radius: 100px; color: #fff; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 4px; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 10px 30px rgba(153, 101, 21, 0.3);
+        }
+        .btn-luxe:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(197, 160, 89, 0.5); }
+
+        /* Partner Module (Static Plastic) */
+        .partner-card {
+            background: linear-gradient(135deg, #1a1a1a, #000);
+            padding: 30px; border-radius: 25px; border: 1px solid var(--gold);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .btn { 
-            width: 100%; padding: 20px; background: linear-gradient(135deg, var(--gold), var(--deep-gold));
-            border: none; border-radius: 50px; font-weight: 900; cursor: pointer; 
-            color: #fff; text-transform: uppercase; letter-spacing: 3px; transition: 0.4s;
-        }
-        
-        #ai-log { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .ai-msg { color: var(--gold); margin-bottom: 12px; }
-        .user-msg { color: #fff; text-align: right; margin-bottom: 12px; }
-
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="login-layer" style="position:fixed; inset:0; background: var(--safari-brown) url('elephant 19.jpg') no-repeat center center; background-size: cover; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
-        <div style="background: var(--glass); padding: 60px; border-radius: 40px; backdrop-filter: blur(20px); border: 1px solid var(--border);">
-            <h1 style="letter-spacing: 8px; color: #fff; margin-top: 30px; font-weight: 200;">SDR <span style="font-weight: 900; color: var(--gold);">AFRICA</span></h1>
-            <p style="font-size: 0.8rem; letter-spacing: 3px; color: var(--gold); margin-bottom: 30px;">THE FUTURE OF AFRICAN SOUND</p>
-            <input type="password" id="pass-key" placeholder="ACCESS KEY" style="width: 250px; text-align: center;">
-            <br>
-            <button class="btn" style="width: 250px;" onclick="authenticate()">Unleash Power</button>
-        </div>
-    </div>
+    <div class="bg-glow"></div>
 
-    <div class="app-shell hidden" id="portal-shell">
-        <nav class="nav-sidebar">
-            <h2 style="font-size: 1.2rem; text-align: center; letter-spacing: 2px;">SDR 2026</h2>
-            <div class="nav-item active" onclick="showPage('home', this)">🏠 Hub</div>
-            <div class="nav-item" onclick="showPage('upload', this)">🚀 Release</div>
-            <div class="nav-item" onclick="showPage('ai', this)">🤖 Concierge</div>
-            <div class="nav-item" onclick="showPage('promote', this)">📣 Promo</div>
-            <div class="nav-item" onclick="showPage('rates', this)">💎 Luxe</div>
-        </nav>
+    <div class="app-shell" id="portal">
+        <aside class="nav-sidebar">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h1 style="font-weight: 100; letter-spacing: 10px; font-size: 1.5rem;">SOUL<span style="font-weight: 900; color: var(--gold);">DUST</span></h1>
+                <p style="font-size: 0.6rem; color: var(--gold); letter-spacing: 3px;">RECORDS WORLDWIDE</p>
+            </div>
+            <div class="nav-item active" onclick="tab('home')">Dashboard</div>
+            <div class="nav-item" onclick="tab('release')">New Submission</div>
+            <div class="nav-item" onclick="tab('static')">Static Plastic Sync</div>
+            <div class="nav-item" onclick="tab('royalty')">Financial Ledger</div>
+        </aside>
 
         <main class="main-content">
-            <div id="page-home" class="page-layer active">
-                <h2>Artist Hub</h2>
-                <div class="glass-card">
-                    <h3 style="color: var(--gold);">Status: Active Safari Sync</h3>
-                    <p>Welcome to the Soul Dust Rec portal. Your music is currently being distributed to 150+ stores globally.</p>
-                </div>
-            </div>
-
-            <div id="page-upload" class="page-layer">
-                <h2>Master Distribution</h2>
-                <div class="glass-card">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div><label>Primary Artist</label><input type="text" placeholder="e.g. Nontomby"></div>
-                        <div><label>Featured Artist</label><input type="text" placeholder="e.g. Nipseedadust"></div>
+            <div id="tab-home" class="release-stage active">
+                <span class="gold-text">Welcome, Founder</span>
+                <h2>SDR Command Center</h2>
+                <div class="partner-card" style="margin-top: 40px;">
+                    <div>
+                        <h4 style="margin:0; color: var(--gold);">Static Plastic Partnership</h4>
+                        <p style="font-size: 0.8rem; opacity: 0.6;">Active Distribution Agreement: V2.0</p>
                     </div>
-                    <label>Track Title</label>
-                    <input type="text" placeholder="Song Name">
-                    <button class="btn" onclick="processUpload()">Deploy to Global Stores</button>
-                </div>
-            </div>
-
-            <div id="page-ai" class="page-layer">
-                <h2>AI Concierge</h2>
-                <div class="glass-card">
-                    <div id="ai-log"><div class="ai-msg">SDR AI: Awaiting instructions...</div></div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="ai-input" placeholder="Ask the brain..." style="margin:0">
-                        <button class="btn" style="width: 120px; padding: 10px;" onclick="talkToAI()">Send</button>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1.5rem; font-weight: 900;">LIVE</span>
                     </div>
                 </div>
             </div>
 
-            <div id="page-promote" class="page-layer">
-                <h2>Promo Tools</h2>
-                <div class="glass-card">
-                    <label>Spotify/Apple Link</label>
-                    <input type="text" placeholder="Paste Link Here">
-                    <button class="btn">Generate Multi-Pill Link</button>
+            <div id="tab-release" class="release-stage">
+                <span class="gold-text">Step 01: Metadata Mastery</span>
+                <h2>The Release Form</h2>
+                
+                <div class="form-step">
+                    <label class="gold-text">Primary Artist</label>
+                    <input type="text" id="artist" placeholder="Enter Full Artist Name">
+                    
+                    <label class="gold-text">Track Title</label>
+                    <input type="text" id="title" placeholder="Name of the Masterpiece">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                        <div>
+                            <label class="gold-text">Genre</label>
+                            <select id="genre">
+                                <option>Gqom</option>
+                                <option>Afro Tech</option>
+                                <option>Amapiano</option>
+                                <option>Afro House</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="gold-text">Catalogue Number</label>
+                            <input type="text" id="cat" placeholder="SDR001">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step">
+                    <label class="gold-text">Agreement Verification</label>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">By submitting, you confirm this release adheres to the Static Plastic Digital Distribution Agreement (SA Law).</p>
+                    <button class="btn-luxe" onclick="deploy()">Seal & Deploy Release</button>
                 </div>
             </div>
 
-            <div id="page-rates" class="page-layer">
-                <h2>Luxe Services</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="glass-card">Professional Mix & Master<br><span style="color:var(--gold)">R500</span></div>
-                    <div class="glass-card">Album Cover Design<br><span style="color:var(--gold)">R200</span></div>
+            <div id="tab-static" class="release-stage">
+                <span class="gold-text">Distributor Gateway</span>
+                <h2>Static Plastic Bridge</h2>
+                <div class="form-step" style="border-left-color: #fff;">
+                    <h3>Upload Royalty Statement</h3>
+                    <p style="opacity: 0.6;">Static Plastic can drop CSV/XLSX files here to update label earnings.</p>
+                    <div style="border: 2px dashed var(--border); padding: 50px; text-align: center; border-radius: 20px;">
+                        <input type="file" style="display:none" id="file-up">
+                        <button class="btn-luxe" style="background: transparent; border: 1px solid var(--gold);" onclick="document.getElementById('file-up').click()">Select Statement</button>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        const SDR_PASS = "SDR2026";
-
-        function authenticate() {
-            const key = document.getElementById('pass-key').value;
-            if(key === SDR_PASS) {
-                document.getElementById('login-layer').style.display = 'none';
-                document.getElementById('portal-shell').classList.remove('hidden');
-            } else {
-                alert("ACCESS DENIED");
-            }
-        }
-
-        function showPage(pageId, element) {
-            document.querySelectorAll('.page-layer').forEach(p => p.classList.remove('active'));
+        function tab(name) {
+            document.querySelectorAll('.release-stage').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            element.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        function talkToAI() {
-            const input = document.getElementById('ai-input');
-            const log = document.getElementById('ai-log');
-            if(!input.value) return;
-            log.innerHTML += `<div class="user-msg">${input.value}</div>`;
-            input.value = "";
-            log.scrollTop = log.scrollHeight;
-        }
-
-        function processUpload() {
-            alert("DEPLOYING... Syncing with Believe Digital & Static Plastic.");
+        function deploy() {
+            const art = document.getElementById('artist').value;
+            if(!art) return alert("Please name the artist.");
+            alert("SDR ENGINE: Packaging " + art + " for Global Distribution via Static Plastic.");
         }
     </script>
 </body>
