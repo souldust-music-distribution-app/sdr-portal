@@ -3,147 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Elite | African Power Portal 2026</title>
+    <title>SDR Elite | Power Portal 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;900&display=swap');
+
         :root { 
-            --gold: #d4af37; 
+            --gold: #c5a059; 
             --deep-gold: #996515;
-            --accent-orange: #ff4500;
-            --glass: rgba(15, 15, 15, 0.9);
-            --border-glow: rgba(212, 175, 55, 0.3);
-            --neon-blue: #00f2ff;
+            --accent-orange: #ff5f1f;
+            --glass: rgba(255, 255, 255, 0.8); /* Light Glass */
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --text-dark: #1a1a1a;
+            --border-glow: rgba(197, 160, 89, 0.2);
         }
         
         body {
-            margin: 0; font-family: 'Outfit', 'Segoe UI', sans-serif; 
-            background: #050505 url('elephant 19.jpg') no-repeat center center fixed; 
-            background-size: cover; color: #f0f0f0; height: 100vh; overflow: hidden;
+            margin: 0; font-family: 'Outfit', sans-serif; 
+            background: #fdfdfd url('elephant 19.jpg') no-repeat center center fixed; 
+            background-size: cover; color: var(--text-dark); height: 100vh; overflow: hidden;
         }
 
-        /* 3D Glass Layout */
-        .app-shell { display: flex; height: 100vh; width: 100vw; gap: 15px; padding: 15px; box-sizing: border-box; }
+        /* 3D Glass Shell */
+        .app-shell { display: flex; height: 100vh; width: 100vw; gap: 20px; padding: 20px; box-sizing: border-box; }
         
         .nav-sidebar { 
-            width: 280px; background: var(--glass); border-radius: 30px;
-            border: 1px solid var(--border-glow); display: flex; flex-direction: column; 
-            padding: 30px; backdrop-filter: blur(25px); box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            width: 280px; background: var(--glass); border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; 
+            padding: 35px; backdrop-filter: blur(30px); box-shadow: 15px 15px 40px rgba(0,0,0,0.05);
             overflow-y: auto;
         }
 
         .nav-item { 
-            padding: 15px; margin-bottom: 10px; border-radius: 20px; cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            color: #aaa; display: flex; align-items: center; gap: 15px;
-            font-size: 0.8rem; font-weight: 600; letter-spacing: 1.2px;
+            padding: 16px; margin-bottom: 12px; border-radius: 18px; cursor: pointer; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            color: #666; display: flex; align-items: center; gap: 15px;
+            font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
             border: 1px solid transparent; text-transform: uppercase;
         }
         .nav-item:hover, .nav-item.active { 
-            background: linear-gradient(145deg, rgba(212, 175, 55, 0.2), rgba(0,0,0,0));
-            color: var(--gold); border: 1px solid var(--border-glow);
-            transform: translateX(10px) scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: #ffffff;
+            color: var(--deep-gold); border: 1px solid var(--gold);
+            transform: scale(1.03); box-shadow: 0 8px 20px rgba(197, 160, 89, 0.15);
         }
 
-        /* Main Content Container */
+        /* Light Theme Main Content */
         .main-content { 
-            flex: 1; background: var(--glass); border-radius: 30px;
-            border: 1px solid var(--border-glow); overflow-y: auto; 
-            padding: 50px; backdrop-filter: blur(20px); position: relative;
+            flex: 1; background: var(--glass); border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.5); overflow-y: auto; 
+            padding: 50px; backdrop-filter: blur(30px); position: relative;
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.03);
         }
 
-        .page-layer { display: none; animation: slideUp 0.6s ease-out; }
+        .page-layer { display: none; animation: fadeIn 0.8s ease; }
         .page-layer.active { display: block; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 3D Glass Cards */
         .glass-card { 
-            background: rgba(255, 255, 255, 0.03); padding: 35px; border-radius: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: 0.3s;
+            background: var(--card-bg); padding: 35px; border-radius: 25px; 
+            border: 1px solid rgba(255, 255, 255, 0.8); margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;
         }
-        .glass-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .glass-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 15px 35px rgba(197, 160, 89, 0.1); }
 
         h2 { 
-            font-size: 2rem; color: var(--gold); text-transform: uppercase; 
-            letter-spacing: 4px; margin-bottom: 30px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            font-size: 2.2rem; color: var(--text-dark); text-transform: uppercase; 
+            letter-spacing: 6px; margin-bottom: 30px; font-weight: 900;
         }
 
         input, select, textarea { 
-            width: 100%; padding: 18px; margin-bottom: 20px; background: rgba(0,0,0,0.5); 
-            border: 1px solid #333; color: white; border-radius: 15px; font-size: 1rem; font-family: inherit;
+            width: 100%; padding: 18px; margin-bottom: 20px; background: rgba(255,255,255,0.9); 
+            border: 1px solid #eee; color: var(--text-dark); border-radius: 15px; font-size: 1rem;
         }
-        input:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        input:focus { border-color: var(--gold); outline: none; background: #fff; }
 
+        /* Elegant Button */
         .btn { 
-            width: 100%; padding: 20px; background: linear-gradient(135deg, var(--gold), var(--deep-gold));
-            border: none; border-radius: 50px; font-weight: 900; cursor: pointer; 
-            color: #000; text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
+            width: 100%; padding: 20px; background: linear-gradient(135deg, #1a1a1a, #444);
+            border: none; border-radius: 50px; font-weight: 600; cursor: pointer; 
+            color: #fff; text-transform: uppercase; letter-spacing: 3px; transition: 0.4s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+        .btn:hover { background: var(--deep-gold); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(197, 160, 89, 0.3); }
 
-        /* Icon Styles */
-        .icon-3d { width: 35px; height: 35px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; box-shadow: 4px 4px 0 var(--deep-gold); font-style: normal; }
+        .icon-3d { width: 35px; height: 35px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; box-shadow: 3px 3px 0 var(--gold); }
 
-        /* Grid System */
-        .inst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-        .inst-card { background: #000; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #222; text-decoration: none; color: white; transition: 0.3s; }
-        .inst-card:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
+        /* Modern Pipeline */
+        .pipeline-container { display: flex; justify-content: space-between; margin-top: 40px; position: relative; }
+        .pipeline-step { text-align: center; flex: 1; z-index: 2; font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .dot { width: 14px; height: 14px; background: #ddd; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #fff; transition: 0.5s; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .active-dot { background: var(--accent-orange); box-shadow: 0 0 15px var(--accent-orange); }
+        .pipeline-line { position: absolute; top: 10px; left: 12%; right: 12%; height: 2px; background: #eee; z-index: 1; }
 
-        /* Pipeline Styles */
-        .pipeline-container { display: flex; justify-content: space-between; margin-top: 30px; position: relative; padding: 0 20px; }
-        .pipeline-step { text-align: center; flex: 1; z-index: 2; }
-        .dot { width: 20px; height: 20px; background: #333; border-radius: 50%; margin: 0 auto 10px; border: 3px solid #000; transition: 0.5s; }
-        .active-dot { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
-        .pipeline-line { position: absolute; top: 10px; left: 10%; right: 10%; height: 2px; background: #333; z-index: 1; }
-
-        /* Floating Assistant */
+        /* Floating Assistant - Soft Glow */
         .ai-assistant {
-            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
-            background: linear-gradient(135deg, var(--gold), var(--accent-orange)); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; animation: float 3s infinite ease-in-out;
+            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
+            background: #fff; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 1000; border: 1px solid var(--gold); transition: 0.3s;
         }
-        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
+        .ai-assistant:hover { transform: scale(1.1) rotate(5deg); }
 
         .hidden { display: none !important; }
-        .player-2026 { background: #000; border-radius: 20px; padding: 20px; border: 1px solid var(--gold); margin: 20px 0; display: none; }
-        audio { width: 100%; filter: sepia(1) saturate(5) hue-rotate(10deg) invert(1); }
+        .inst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .inst-card { background: #fff; padding: 25px; border-radius: 20px; text-align: center; border: 1px solid #f0f0f0; text-decoration: none; color: var(--text-dark); transition: 0.3s; font-weight: 600; }
+        .inst-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
 
+        /* Audio Player Light */
+        .player-2026 { background: #f9f9f9; border-radius: 25px; padding: 25px; border: 1px solid #eee; margin: 20px 0; }
+        audio { width: 100%; height: 40px; }
+
+        /* Logo Glow */
+        .logo-main { filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.2)); }
     </style>
 </head>
 <body>
 
-    <div class="ai-assistant" onclick="alert('Dusty AI: I am analyzing your release metadata. Everything looks elite!')">
-        <span style="font-size: 1.8rem;">🎭</span>
+    <div class="ai-assistant" onclick="alert('Hello! I am your SDR Concierge. How can I assist your career today?')">
+        <span style="font-size: 1.5rem;">✨</span>
     </div>
 
-    <div id="login-layer" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
-        <div>
-            <img src="Soul Dust.png" height="120" style="filter: drop-shadow(0 0 25px var(--gold)); cursor: pointer;" onclick="focusPass()">
-            <h1 style="letter-spacing: 12px; color: var(--gold); margin-top: 30px; font-weight: 200;">SDR ELITE</h1>
-            <input type="password" id="pass-key" placeholder="••••••••" style="width: 220px; text-align: center; background: transparent; border: none; border-bottom: 2px solid #222; margin-top: 20px; letter-spacing: 5px;">
+    <div id="login-layer" style="position:fixed; inset:0; background:#fff url('elephant 19.jpg') no-repeat center center; background-size: cover; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
+        <div style="background: rgba(255,255,255,0.85); padding: 60px; border-radius: 40px; backdrop-filter: blur(20px); border: 1px solid #fff; box-shadow: 0 30px 60px rgba(0,0,0,0.1);">
+            <img src="Soul Dust.png" height="100" class="logo-main" onclick="focusPass()">
+            <h1 style="letter-spacing: 8px; color: var(--text-dark); margin-top: 30px; font-weight: 200;">SDR <span style="font-weight: 900; color: var(--gold);">ELITE</span></h1>
+            <p style="font-size: 0.8rem; letter-spacing: 3px; color: #888; margin-bottom: 30px;">THE FUTURE OF AFRICAN SOUND</p>
+            <input type="password" id="pass-key" placeholder="ACCESS KEY" style="width: 250px; text-align: center; border: 1px solid #ddd; background: #fff;">
             <br>
-            <button class="btn" style="width: 220px; margin-top: 20px;" onclick="authenticate()">UNLEASH POWER</button>
+            <button class="btn" style="width: 250px;" onclick="authenticate()">Enter Portal</button>
         </div>
     </div>
 
     <div class="app-shell hidden" id="portal-shell">
         <nav class="nav-sidebar">
-            <img src="Soul Dust.png" height="50" style="margin-bottom: 40px; align-self: center;">
+            <img src="Soul Dust.png" height="40" style="margin-bottom: 50px; align-self: center;">
             
-            <div class="nav-item active" onclick="showPage('home')"><i class="icon-3d">🏠</i> Home Hub</div>
+            <div class="nav-item active" onclick="showPage('home')"><i class="icon-3d">🏠</i> Home</div>
+            <div class="nav-item" onclick="showPage('upload')"><i class="icon-3d">🚀</i> Release</div>
             <div class="nav-item" onclick="showPage('institutions')"><i class="icon-3d">🌍</i> Copyright</div>
-            <div class="nav-item" onclick="showPage('upload')"><i class="icon-3d">🚀</i> Release Push</div>
             <div class="nav-item" onclick="showPage('academy')"><i class="icon-3d">🎓</i> Academy</div>
-            <div class="nav-item" onclick="showPage('promote')"><i class="icon-3d">📣</i> Promotion</div>
-            <div class="nav-item" onclick="showPage('dashboard')"><i class="icon-3d">📈</i> Performance</div>
-            <div class="nav-item" onclick="showPage('vibe')"><i class="icon-3d">🎨</i> Vibe Check</div>
-            <div class="nav-item" onclick="showPage('rates')"><i class="icon-3d">💎</i> Luxe Rates</div>
+            <div class="nav-item" onclick="showPage('promote')"><i class="icon-3d">📣</i> Promo</div>
+            <div class="nav-item" onclick="showPage('dashboard')"><i class="icon-3d">📈</i> Data</div>
+            <div class="nav-item" onclick="showPage('vibe')"><i class="icon-3d">🎨</i> Vibe</div>
+            <div class="nav-item" onclick="showPage('rates')"><i class="icon-3d">💎</i> Luxe</div>
             
             <div style="margin-top: auto; padding-top: 20px;">
-                <div class="nav-item" onclick="showPage('admin')" style="background: rgba(255,69,0,0.1); color: var(--accent-orange); border: 1px solid rgba(255,69,0,0.2);">
-                    <i class="icon-3d" style="box-shadow: 4px 4px 0 var(--accent-orange);">👑</i> Admin
+                <div class="nav-item" onclick="showPage('admin')" style="color: var(--accent-orange);">
+                    <i class="icon-3d" style="box-shadow: 3px 3px 0 var(--accent-orange);">👑</i> Admin
                 </div>
             </div>
         </nav>
@@ -151,112 +158,106 @@
         <main class="main-content">
             
             <div id="page-home" class="page-layer active">
-                <h2>Elite Artist Portal</h2>
+                <h2>Welcome, Artist</h2>
                 <div class="glass-card">
-                    <h3>Current Release Pipeline</h3>
+                    <h3 style="font-weight: 400;">Release Status</h3>
                     <div class="pipeline-container">
                         <div class="pipeline-line"></div>
-                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Submitted</small></div>
-                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Quality Check</small></div>
-                        <div class="pipeline-step"><div class="dot"></div><small>Believe Sync</small></div>
-                        <div class="pipeline-step"><div class="dot"></div><small>Store Live</small></div>
+                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Ready</small></div>
+                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Review</small></div>
+                        <div class="pipeline-step"><div class="dot"></div><small>Sync</small></div>
+                        <div class="pipeline-step"><div class="dot"></div><small>Live</small></div>
                     </div>
                 </div>
-                <div class="glass-card" style="border-left: 5px solid var(--gold);">
-                    <p>Welcome back. Your catalog is currently being optimized for 2026 streaming algorithms.</p>
-                    <button class="btn" style="width: auto; padding: 12px 30px;" onclick="showPage('upload')">Start New Release</button>
-                </div>
-            </div>
-
-            <div id="page-institutions" class="page-layer">
-                <h2>African Rights Hub</h2>
                 <div class="inst-grid">
-                    <a href="https://portal.samro.org.za" target="_blank" class="inst-card"><strong>SAMRO</strong><br><small>Composers</small></a>
-                    <a href="https://portal.capasso.co.za" target="_blank" class="inst-card"><strong>CAPASSO</strong><br><small>Mechanicals</small></a>
-                    <a href="https://www.sampra.org.za" target="_blank" class="inst-card"><strong>SAMPRA</strong><br><small>Artists</small></a>
-                    <a href="https://risa.org.za" target="_blank" class="inst-card"><strong>RiSA</strong><br><small>ISRC Codes</small></a>
-                </div>
-            </div>
-
-            <div id="page-academy" class="page-layer">
-                <h2>SDR Academy</h2>
-                <div class="glass-card" style="background: #000; height: 250px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--gold);">
-                    <p style="text-align: center; color: var(--gold);">[ EXCLUSIVE MASTERCLASS: COLLECTING YOUR ROYALTIES ]<br><small>Video Loading...</small></p>
-                </div>
-                <div class="inst-grid">
-                    <div class="inst-card">Understanding Splits</div>
-                    <div class="inst-card">Marketing 101</div>
-                    <div class="inst-card">Social Strategy</div>
-                </div>
-            </div>
-
-            <div id="page-promote" class="page-layer">
-                <h2>Promotion Tools</h2>
-                <div class="glass-card">
-                    <h3>Smart Link Generator</h3>
-                    <input type="text" placeholder="Paste Spotify or Apple Music URL">
-                    <button class="btn">Generate Elite Promo Link</button>
-                </div>
-                <div class="glass-card">
-                    <h3>Artist EPK Builder</h3>
-                    <textarea placeholder="Your Professional Bio..." rows="4"></textarea>
-                    <button class="btn" style="background: #222; color: #fff;">Upload Promo Photos</button>
+                    <div class="glass-card" style="margin-bottom:0">
+                        <h4 style="margin:0; color: var(--gold);">Global Reach</h4>
+                        <p style="font-size: 1.8rem; font-weight: 900; margin: 10px 0;">+124%</p>
+                        <small>Monthly Listeners</small>
+                    </div>
+                    <div class="glass-card" style="margin-bottom:0">
+                        <h4 style="margin:0; color: var(--gold);">Revenue</h4>
+                        <p style="font-size: 1.8rem; font-weight: 900; margin: 10px 0;">Elite</p>
+                        <small>Artist Tier Status</small>
+                    </div>
                 </div>
             </div>
 
             <div id="page-upload" class="page-layer">
-                <h2>Release Push</h2>
+                <h2>New Release</h2>
                 <div class="glass-card">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <input type="text" id="up-artist" placeholder="Artist Stage Name">
-                        <input type="text" id="up-title" placeholder="Track Title">
+                        <input type="text" id="up-artist" placeholder="Artist Name">
+                        <input type="text" id="up-title" placeholder="Song Title">
                     </div>
                     <select id="up-genre">
-                        <option>AFRO HOUSE</option>
-                        <option>AMAPIANO</option>
-                        <option>GQOM</option>
-                        <option>TECHNO</option>
+                        <option>Ammapiano</option>
+                        <option>Afro House</option>
+                        <option>Gqom</option>
                     </select>
-                    <label style="color:var(--gold); font-size:0.75rem;">MASTER WAV FILE</label>
+                    <p style="font-size: 0.7rem; color: #888;">UPLOAD MASTER (WAV)</p>
                     <input type="file" accept=".wav" onchange="handlePreview(this)">
-                    <div id="preview-box" class="player-2026"><audio id="player" controls></audio></div>
-                    <label style="color:var(--gold); font-size:0.75rem;">3000px COVER ART</label>
-                    <input type="file" accept="image/*">
-                    <button class="btn" id="uploadBtn" onclick="processUpload()">Deploy to Believe Digital</button>
+                    <div id="preview-box" class="player-2026" style="display:none;"><audio id="player" controls></audio></div>
+                    <button class="btn" id="uploadBtn" onclick="processUpload()">Deploy to Stores</button>
+                </div>
+            </div>
+
+            <div id="page-institutions" class="page-layer">
+                <h2>Royalties & Rights</h2>
+                <div class="inst-grid">
+                    <a href="https://portal.samro.org.za" target="_blank" class="inst-card">SAMRO</a>
+                    <a href="https://portal.capasso.co.za" target="_blank" class="inst-card">CAPASSO</a>
+                    <a href="#" class="inst-card">SAMPRA</a>
+                    <a href="#" class="inst-card">RiSA</a>
+                </div>
+            </div>
+
+            <div id="page-academy" class="page-layer">
+                <h2>Elite Academy</h2>
+                <div class="glass-card" style="height: 300px; display: flex; align-items: center; justify-content: center; background: #eee;">
+                    <p style="color: #666;">Video: The Art of Artist Branding (2026)</p>
+                </div>
+            </div>
+
+            <div id="page-promote" class="page-layer">
+                <h2>Promo Tools</h2>
+                <div class="glass-card">
+                    <h3>Smart Link Creator</h3>
+                    <input type="text" placeholder="Spotify Link">
+                    <button class="btn">Generate Link</button>
                 </div>
             </div>
 
             <div id="page-dashboard" class="page-layer">
-                <h2>Global Analytics</h2>
+                <h2>Analytics</h2>
                 <div class="glass-card" style="text-align: center;">
-                    <p>Access Believe Backstage for real-time sales.</p>
-                    <a href="https://www.believebackstage.com" target="_blank" class="btn" style="width: auto; padding: 15px 50px;">LOGIN TO BACKSTAGE</a>
+                    <p>Connected via Believe Digital.</p>
+                    <a href="https://www.believebackstage.com" target="_blank" class="btn" style="width: auto; padding: 15px 40px;">Open Backstage</a>
                 </div>
             </div>
 
             <div id="page-vibe" class="page-layer">
-                <h2>A&R Vibe Check</h2>
+                <h2>Vibe Check</h2>
                 <div class="glass-card">
-                    <p>Describe the "Vibe" for your artwork and marketing assets.</p>
-                    <textarea placeholder="Colors, mood, influences..."></textarea>
-                    <button class="btn">Send to Creative Team</button>
+                    <p>Describe the visual direction of your next project.</p>
+                    <textarea rows="5" placeholder="Dreamy, futuristic, organic..."></textarea>
+                    <button class="btn">Submit to Creative</button>
                 </div>
             </div>
 
             <div id="page-rates" class="page-layer">
-                <h2>Elite Services</h2>
+                <h2>Premium Services</h2>
                 <div class="inst-grid">
-                    <div class="inst-card"><h3>Mix & Master</h3><p style="color:var(--gold);">R450</p></div>
-                    <div class="inst-card"><h3>Cover Design</h3><p style="color:var(--gold);">R200</p></div>
+                    <div class="inst-card">Mix & Master<br><span style="color:var(--gold)">R450</span></div>
+                    <div class="inst-card">Cover Art<br><span style="color:var(--gold)">R200</span></div>
                 </div>
             </div>
 
             <div id="page-admin" class="page-layer">
-                <h2 style="color: var(--accent-orange);">Admin Control</h2>
+                <h2>System Admin</h2>
                 <div class="glass-card">
-                    <input type="text" placeholder="Artist Name">
-                    <input type="email" placeholder="Artist Email">
-                    <button class="btn" style="background: var(--accent-orange);" onclick="alert('Artist Portal Active')">Create Artist Portal</button>
+                    <input type="text" placeholder="New Artist Name">
+                    <button class="btn" style="background: var(--accent-orange);">Onboard Artist</button>
                 </div>
             </div>
 
@@ -275,7 +276,7 @@
                     document.getElementById('login-layer').classList.add('hidden');
                     document.getElementById('portal-shell').classList.remove('hidden');
                 }, 500);
-            } else { alert("ACCESS DENIED"); }
+            } else { alert("AUTHENTICATION FAILED"); }
         }
 
         function showPage(pageId) {
@@ -296,11 +297,11 @@
 
         async function processUpload() {
             const btn = document.getElementById('uploadBtn');
-            btn.innerText = "ENCRYPTING RELEASE...";
+            btn.innerText = "UPLOADING...";
             setTimeout(() => {
-                alert("SUCCESS: Release deployed to SDR distribution servers.");
-                btn.innerText = "SYNCED";
-                btn.style.background = "green";
+                alert("Success! Your music has been sent for distribution.");
+                btn.innerText = "SUCCESS";
+                btn.style.background = "#4CAF50";
             }, 3000);
         }
     </script>
