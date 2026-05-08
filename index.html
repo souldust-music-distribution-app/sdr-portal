@@ -10,28 +10,49 @@
         :root { 
             --gold: #c5a059; 
             --deep-gold: #996515;
-            --safari-brown: #3d2b1f; /* Dark Brown */
-            --glass: rgba(30, 20, 15, 0.85); /* Dark Glass */
+            --safari-brown: #3d2b1f;
+            --glass: rgba(30, 20, 15, 0.85);
             --card-bg: rgba(255, 255, 255, 0.05);
             --text-light: #f4f1ea;
             --border: rgba(197, 160, 89, 0.3);
         }
 
-        /* FIXED: Added missing hidden class definition */
+        /* FIXED: Force hidden state to remove from layout */
         .hidden { display: none !important; }
         
         body {
-            margin: 0; font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            font-family: 'Outfit', sans-serif; 
             background: var(--safari-brown) url('elephant 19.jpg') no-repeat center center fixed; 
-            background-size: cover; color: var(--text-light); height: 100vh; overflow: hidden;
+            background-size: cover; 
+            color: var(--text-light); 
+            height: 100vh; 
+            overflow: hidden;
         }
 
-        .app-shell { display: flex; height: 100vh; width: 100vw; gap: 20px; padding: 20px; box-sizing: border-box; }
+        /* FIXED: Ensure app-shell takes full screen and doesn't overlap */
+        .app-shell { 
+            display: flex; 
+            height: 100vh; 
+            width: 100vw; 
+            gap: 20px; 
+            padding: 20px; 
+            box-sizing: border-box; 
+            position: relative;
+            z-index: 1;
+        }
         
         .nav-sidebar { 
-            width: 280px; background: var(--glass); border-radius: 35px;
-            border: 1px solid var(--border); display: flex; flex-direction: column; 
-            padding: 35px; backdrop-filter: blur(30px); box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+            width: 280px; 
+            background: var(--glass); 
+            border-radius: 35px;
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            padding: 35px; 
+            backdrop-filter: blur(30px); 
+            box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+            flex-shrink: 0; /* Prevents sidebar from squishing */
         }
 
         .nav-item { 
@@ -39,15 +60,20 @@
             transition: 0.4s; color: #bbb; display: flex; align-items: center; gap: 15px;
             font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
         }
+        
         .nav-item:hover, .nav-item.active { 
             background: rgba(197, 160, 89, 0.2);
             color: var(--gold); border: 1px solid var(--gold);
         }
 
         .main-content { 
-            flex: 1; background: var(--glass); border-radius: 35px;
-            border: 1px solid var(--border); overflow-y: auto; 
-            padding: 50px; backdrop-filter: blur(30px); position: relative;
+            flex: 1; 
+            background: var(--glass); 
+            border-radius: 35px;
+            border: 1px solid var(--border); 
+            overflow-y: auto; 
+            padding: 50px; 
+            backdrop-filter: blur(30px);
         }
 
         .page-layer { display: none; animation: fadeIn 0.8s ease; }
@@ -63,9 +89,10 @@
         h2 { font-size: 2.2rem; color: var(--gold); letter-spacing: 6px; margin-bottom: 30px; font-weight: 900; }
         label { display: block; font-size: 0.7rem; color: var(--gold); margin-bottom: 8px; font-weight: 900; text-transform: uppercase; }
 
-        input, select, textarea { 
+        input, select { 
             width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.3); 
             border: 1px solid var(--border); color: #fff; border-radius: 12px; font-family: inherit;
+            box-sizing: border-box;
         }
 
         .btn { 
@@ -73,13 +100,11 @@
             border: none; border-radius: 50px; font-weight: 900; cursor: pointer; 
             color: #fff; text-transform: uppercase; letter-spacing: 3px; transition: 0.4s;
         }
-        .btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(197, 160, 89, 0.4); }
+        
+        #ai-log { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .ai-msg { color: var(--gold); margin-bottom: 12px; }
+        .user-msg { color: #fff; text-align: right; margin-bottom: 12px; }
 
-        #ai-log { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .ai-msg { color: var(--gold); margin-bottom: 12px; font-size: 0.9rem; }
-        .user-msg { color: #fff; text-align: right; margin-bottom: 12px; font-size: 0.9rem; }
-
-        .agreement-box { height: 100px; overflow-y: scroll; background: rgba(0,0,0,0.2); padding: 15px; font-size: 0.7rem; color: #ccc; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -96,7 +121,7 @@
 
     <div class="app-shell hidden" id="portal-shell">
         <nav class="nav-sidebar">
-            <h2 style="font-size: 1.2rem; text-align: center;">SDR 2026</h2>
+            <h2 style="font-size: 1.2rem; text-align: center; letter-spacing: 2px;">SDR 2026</h2>
             <div class="nav-item active" onclick="showPage('home', this)">🏠 Hub</div>
             <div class="nav-item" onclick="showPage('upload', this)">🚀 Release</div>
             <div class="nav-item" onclick="showPage('ai', this)">🤖 Concierge</div>
@@ -105,7 +130,6 @@
         </nav>
 
         <main class="main-content">
-            
             <div id="page-home" class="page-layer active">
                 <h2>Artist Hub</h2>
                 <div class="glass-card">
@@ -118,27 +142,11 @@
                 <h2>Master Distribution</h2>
                 <div class="glass-card">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <label>Primary Artist</label>
-                            <input type="text" id="up-artist" placeholder="e.g. Nontomby">
-                        </div>
-                        <div>
-                            <label>Featured Artist(s)</label>
-                            <input type="text" id="up-feat" placeholder="e.g. Nipseedadust">
-                        </div>
+                        <div><label>Primary Artist</label><input type="text" placeholder="e.g. Nontomby"></div>
+                        <div><label>Featured Artist</label><input type="text" placeholder="e.g. Nipseedadust"></div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <label>Track Title</label>
-                            <input type="text" id="up-title" placeholder="Song Name">
-                        </div>
-                        <div>
-                            <label>Mix Name</label>
-                            <input type="text" id="up-mix" placeholder="Original Mix / Remix">
-                        </div>
-                    </div>
-                    <label>Composers & Authors</label>
-                    <input type="text" id="up-authors" placeholder="Full Legal Names">
+                    <label>Track Title</label>
+                    <input type="text" placeholder="Song Name">
                     <button class="btn" onclick="processUpload()">Deploy to Global Stores</button>
                 </div>
             </div>
@@ -146,12 +154,10 @@
             <div id="page-ai" class="page-layer">
                 <h2>AI Concierge</h2>
                 <div class="glass-card">
-                    <div id="ai-log">
-                        <div class="ai-msg">SDR AI: Welcome. How can I assist with your release today?</div>
-                    </div>
+                    <div id="ai-log"><div class="ai-msg">SDR AI: Awaiting instructions...</div></div>
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="ai-input" placeholder="Ask the brain..." style="margin:0">
-                        <button class="btn" style="width: 150px; padding: 0;" onclick="talkToAI()">Send</button>
+                        <button class="btn" style="width: 120px; padding: 10px;" onclick="talkToAI()">Send</button>
                     </div>
                 </div>
             </div>
@@ -179,28 +185,22 @@
         const SDR_PASS = "SDR2026";
 
         function authenticate() {
-            if(document.getElementById('pass-key').value === SDR_PASS) {
-                document.getElementById('login-layer').classList.add('hidden');
+            const key = document.getElementById('pass-key').value;
+            if(key === SDR_PASS) {
+                document.getElementById('login-layer').style.display = 'none';
                 document.getElementById('portal-shell').classList.remove('hidden');
-            } else { alert("ACCESS DENIED"); }
+            } else {
+                alert("ACCESS DENIED");
+            }
         }
 
         function showPage(pageId, element) {
-            // Hide all pages
             document.querySelectorAll('.page-layer').forEach(p => p.classList.remove('active'));
-            // Remove active style from all nav items
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            // Show selected page and set active nav item
             document.getElementById('page-' + pageId).classList.add('active');
             element.classList.add('active');
         }
 
-        function processUpload() {
-            alert("DEPLOYING... Check your email for confirmation.");
-        }
-        
-        // Basic AI Talk Function (Frontend only)
         function talkToAI() {
             const input = document.getElementById('ai-input');
             const log = document.getElementById('ai-log');
@@ -208,6 +208,10 @@
             log.innerHTML += `<div class="user-msg">${input.value}</div>`;
             input.value = "";
             log.scrollTop = log.scrollHeight;
+        }
+
+        function processUpload() {
+            alert("DEPLOYING... Syncing with Believe Digital & Static Plastic.");
         }
     </script>
 </body>
