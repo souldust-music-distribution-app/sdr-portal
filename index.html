@@ -10,8 +10,9 @@
             --gold: #d4af37; 
             --deep-gold: #996515;
             --accent-orange: #ff4500;
-            --glass: rgba(20, 20, 20, 0.85);
+            --glass: rgba(15, 15, 15, 0.9);
             --border-glow: rgba(212, 175, 55, 0.3);
+            --neon-blue: #00f2ff;
         }
         
         body {
@@ -27,14 +28,15 @@
             width: 280px; background: var(--glass); border-radius: 30px;
             border: 1px solid var(--border-glow); display: flex; flex-direction: column; 
             padding: 30px; backdrop-filter: blur(25px); box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            overflow-y: auto;
         }
 
         .nav-item { 
-            padding: 18px; margin-bottom: 12px; border-radius: 20px; cursor: pointer; 
+            padding: 15px; margin-bottom: 10px; border-radius: 20px; cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             color: #aaa; display: flex; align-items: center; gap: 15px;
-            font-size: 0.85rem; font-weight: 600; letter-spacing: 1.2px;
-            border: 1px solid transparent;
+            font-size: 0.8rem; font-weight: 600; letter-spacing: 1.2px;
+            border: 1px solid transparent; text-transform: uppercase;
         }
         .nav-item:hover, .nav-item.active { 
             background: linear-gradient(145deg, rgba(212, 175, 55, 0.2), rgba(0,0,0,0));
@@ -67,11 +69,11 @@
             letter-spacing: 4px; margin-bottom: 30px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
-        input, select { 
+        input, select, textarea { 
             width: 100%; padding: 18px; margin-bottom: 20px; background: rgba(0,0,0,0.5); 
-            border: 1px solid #333; color: white; border-radius: 15px; font-size: 1rem;
+            border: 1px solid #333; color: white; border-radius: 15px; font-size: 1rem; font-family: inherit;
         }
-        input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        input:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
 
         .btn { 
             width: 100%; padding: 20px; background: linear-gradient(135deg, var(--gold), var(--deep-gold));
@@ -81,30 +83,48 @@
         .btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
 
         /* Icon Styles */
-        .icon-3d { width: 35px; height: 35px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; box-shadow: 4px 4px 0 var(--deep-gold); }
+        .icon-3d { width: 35px; height: 35px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; box-shadow: 4px 4px 0 var(--deep-gold); font-style: normal; }
 
-        /* Grid for Institutions */
-        .inst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        /* Grid System */
+        .inst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
         .inst-card { background: #000; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #222; text-decoration: none; color: white; transition: 0.3s; }
         .inst-card:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
 
+        /* Pipeline Styles */
+        .pipeline-container { display: flex; justify-content: space-between; margin-top: 30px; position: relative; padding: 0 20px; }
+        .pipeline-step { text-align: center; flex: 1; z-index: 2; }
+        .dot { width: 20px; height: 20px; background: #333; border-radius: 50%; margin: 0 auto 10px; border: 3px solid #000; transition: 0.5s; }
+        .active-dot { background: var(--gold); box-shadow: 0 0 15px var(--gold); }
+        .pipeline-line { position: absolute; top: 10px; left: 10%; right: 10%; height: 2px; background: #333; z-index: 1; }
+
+        /* Floating Assistant */
+        .ai-assistant {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: linear-gradient(135deg, var(--gold), var(--accent-orange)); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; animation: float 3s infinite ease-in-out;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
+
         .hidden { display: none !important; }
-        
-        /* Audio Player 2026 */
-        .player-2026 { background: #000; border-radius: 20px; padding: 20px; border: 1px solid var(--gold); display: none; }
+        .player-2026 { background: #000; border-radius: 20px; padding: 20px; border: 1px solid var(--gold); margin: 20px 0; display: none; }
         audio { width: 100%; filter: sepia(1) saturate(5) hue-rotate(10deg) invert(1); }
 
     </style>
 </head>
 <body>
 
+    <div class="ai-assistant" onclick="alert('Dusty AI: I am analyzing your release metadata. Everything looks elite!')">
+        <span style="font-size: 1.8rem;">🎭</span>
+    </div>
+
     <div id="login-layer" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
         <div>
-            <img src="Soul Dust.png" height="100" style="filter: drop-shadow(0 0 20px var(--gold)); cursor: pointer;" onclick="focusPass()">
-            <h1 style="letter-spacing: 10px; color: var(--gold); margin-top: 30px;">SDR ELITE</h1>
-            <input type="password" id="pass-key" placeholder="••••••••" style="width: 200px; text-align: center; background: transparent; border: none; border-bottom: 2px solid #222; margin-top: 20px;">
+            <img src="Soul Dust.png" height="120" style="filter: drop-shadow(0 0 25px var(--gold)); cursor: pointer;" onclick="focusPass()">
+            <h1 style="letter-spacing: 12px; color: var(--gold); margin-top: 30px; font-weight: 200;">SDR ELITE</h1>
+            <input type="password" id="pass-key" placeholder="••••••••" style="width: 220px; text-align: center; background: transparent; border: none; border-bottom: 2px solid #222; margin-top: 20px; letter-spacing: 5px;">
             <br>
-            <button class="btn" style="width: 200px; margin-top: 20px;" onclick="authenticate()">UNLEASH POWER</button>
+            <button class="btn" style="width: 220px; margin-top: 20px;" onclick="authenticate()">UNLEASH POWER</button>
         </div>
     </div>
 
@@ -112,15 +132,18 @@
         <nav class="nav-sidebar">
             <img src="Soul Dust.png" height="50" style="margin-bottom: 40px; align-self: center;">
             
-            <div class="nav-item active" onclick="showPage('home')"><div class="icon-3d">🏠</div> HOME</div>
-            <div class="nav-item" onclick="showPage('institutions')"><div class="icon-3d">🌍</div> COPYRIGHT HUB</div>
-            <div class="nav-item" onclick="showPage('upload')"><div class="icon-3d">🚀</div> RELEASE PUSH</div>
-            <div class="nav-item" onclick="showPage('dashboard')"><div class="icon-3d">📈</div> PERFORMANCE</div>
-            <div class="nav-item" onclick="showPage('rates')"><div class="icon-3d">💎</div> LUXE SERVICES</div>
+            <div class="nav-item active" onclick="showPage('home')"><i class="icon-3d">🏠</i> Home Hub</div>
+            <div class="nav-item" onclick="showPage('institutions')"><i class="icon-3d">🌍</i> Copyright</div>
+            <div class="nav-item" onclick="showPage('upload')"><i class="icon-3d">🚀</i> Release Push</div>
+            <div class="nav-item" onclick="showPage('academy')"><i class="icon-3d">🎓</i> Academy</div>
+            <div class="nav-item" onclick="showPage('promote')"><i class="icon-3d">📣</i> Promotion</div>
+            <div class="nav-item" onclick="showPage('dashboard')"><i class="icon-3d">📈</i> Performance</div>
+            <div class="nav-item" onclick="showPage('vibe')"><i class="icon-3d">🎨</i> Vibe Check</div>
+            <div class="nav-item" onclick="showPage('rates')"><i class="icon-3d">💎</i> Luxe Rates</div>
             
             <div style="margin-top: auto; padding-top: 20px;">
                 <div class="nav-item" onclick="showPage('admin')" style="background: rgba(255,69,0,0.1); color: var(--accent-orange); border: 1px solid rgba(255,69,0,0.2);">
-                    <div class="icon-3d" style="box-shadow: 4px 4px 0 var(--accent-orange);">👑</div> ADMIN CONTROL
+                    <i class="icon-3d" style="box-shadow: 4px 4px 0 var(--accent-orange);">👑</i> Admin
                 </div>
             </div>
         </nav>
@@ -128,106 +151,112 @@
         <main class="main-content">
             
             <div id="page-home" class="page-layer active">
-                <h2 style="margin-bottom: 10px;">The Soul Dust Standard</h2>
-                <p style="color: var(--gold); letter-spacing: 2px; margin-bottom: 40px;">AFRICAN SOUND. GLOBAL REACH. 2026 TECHNOLOGY.</p>
-                
+                <h2>Elite Artist Portal</h2>
                 <div class="glass-card">
-                    <h3>Elite Artist Status: <span style="color: var(--gold);">ACTIVE</span></h3>
-                    <p style="opacity: 0.7; line-height: 1.8;">You are connected to the SDR High-Speed Infrastructure. Your masters are protected with biometric encryption and synced to global DSPs via Believe Digital.</p>
-                    <div style="display: flex; gap: 15px; margin-top: 20px;">
-                        <button class="btn" style="flex:1" onclick="showPage('upload')">NEW DISTRIBUTION</button>
-                        <button class="btn" style="flex:1; background: #222; color: #fff;" onclick="showPage('institutions')">REGISTER ROYALTIES</button>
+                    <h3>Current Release Pipeline</h3>
+                    <div class="pipeline-container">
+                        <div class="pipeline-line"></div>
+                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Submitted</small></div>
+                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Quality Check</small></div>
+                        <div class="pipeline-step"><div class="dot"></div><small>Believe Sync</small></div>
+                        <div class="pipeline-step"><div class="dot"></div><small>Store Live</small></div>
                     </div>
+                </div>
+                <div class="glass-card" style="border-left: 5px solid var(--gold);">
+                    <p>Welcome back. Your catalog is currently being optimized for 2026 streaming algorithms.</p>
+                    <button class="btn" style="width: auto; padding: 12px 30px;" onclick="showPage('upload')">Start New Release</button>
                 </div>
             </div>
 
             <div id="page-institutions" class="page-layer">
-                <h2>Royalties & Copyright</h2>
-                <p style="margin-bottom: 30px; opacity: 0.8;">Ensure you are registered with these official South African bodies to collect every cent.</p>
+                <h2>African Rights Hub</h2>
                 <div class="inst-grid">
-                    <a href="https://portal.samro.org.za" target="_blank" class="inst-card">
-                        <img src="https://www.samro.org.za/sites/default/files/SAMRO-logo.png" height="30" style="filter: brightness(0) invert(1);"><br><br>
-                        <strong>SAMRO</strong><br><small>Performance Royalties</small>
-                    </a>
-                    <a href="https://portal.capasso.co.za" target="_blank" class="inst-card">
-                        <strong style="color: var(--gold); font-size: 1.5rem;">CAPASSO</strong><br><br>
-                        <strong>CAPASSO</strong><br><small>Mechanical Rights</small>
-                    </a>
-                    <a href="https://www.sampra.org.za" target="_blank" class="inst-card">
-                        <strong style="color: var(--gold); font-size: 1.5rem;">SAMPRA</strong><br><br>
-                        <strong>SAMPRA</strong><br><small>Needletime Rights</small>
-                    </a>
-                    <a href="https://risa.org.za" target="_blank" class="inst-card">
-                        <strong style="color: var(--gold); font-size: 1.5rem;">RiSA</strong><br><br>
-                        <strong>RiSA</strong><br><small>ISRC & Audio Standards</small>
-                    </a>
+                    <a href="https://portal.samro.org.za" target="_blank" class="inst-card"><strong>SAMRO</strong><br><small>Composers</small></a>
+                    <a href="https://portal.capasso.co.za" target="_blank" class="inst-card"><strong>CAPASSO</strong><br><small>Mechanicals</small></a>
+                    <a href="https://www.sampra.org.za" target="_blank" class="inst-card"><strong>SAMPRA</strong><br><small>Artists</small></a>
+                    <a href="https://risa.org.za" target="_blank" class="inst-card"><strong>RiSA</strong><br><small>ISRC Codes</small></a>
                 </div>
-                <div class="glass-card" style="margin-top: 30px; border-left: 5px solid var(--gold);">
-                    <p>💡 <strong>SDR TIP:</strong> We handle your RiSA ISRC codes automatically when you upload. No need to apply manually!</p>
+            </div>
+
+            <div id="page-academy" class="page-layer">
+                <h2>SDR Academy</h2>
+                <div class="glass-card" style="background: #000; height: 250px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--gold);">
+                    <p style="text-align: center; color: var(--gold);">[ EXCLUSIVE MASTERCLASS: COLLECTING YOUR ROYALTIES ]<br><small>Video Loading...</small></p>
+                </div>
+                <div class="inst-grid">
+                    <div class="inst-card">Understanding Splits</div>
+                    <div class="inst-card">Marketing 101</div>
+                    <div class="inst-card">Social Strategy</div>
+                </div>
+            </div>
+
+            <div id="page-promote" class="page-layer">
+                <h2>Promotion Tools</h2>
+                <div class="glass-card">
+                    <h3>Smart Link Generator</h3>
+                    <input type="text" placeholder="Paste Spotify or Apple Music URL">
+                    <button class="btn">Generate Elite Promo Link</button>
+                </div>
+                <div class="glass-card">
+                    <h3>Artist EPK Builder</h3>
+                    <textarea placeholder="Your Professional Bio..." rows="4"></textarea>
+                    <button class="btn" style="background: #222; color: #fff;">Upload Promo Photos</button>
                 </div>
             </div>
 
             <div id="page-upload" class="page-layer">
-                <h2>Release Submission</h2>
+                <h2>Release Push</h2>
                 <div class="glass-card">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <input type="text" id="up-artist" placeholder="PRIMARY ARTIST">
-                        <input type="text" id="up-title" placeholder="SONG TITLE">
+                        <input type="text" id="up-artist" placeholder="Artist Stage Name">
+                        <input type="text" id="up-title" placeholder="Track Title">
                     </div>
                     <select id="up-genre">
-                        <option>AFRO HOUSE / TECH</option>
+                        <option>AFRO HOUSE</option>
                         <option>AMAPIANO</option>
-                        <option>DEEP HOUSE</option>
-                        <option>GQEBERHA GQOM</option>
+                        <option>GQOM</option>
+                        <option>TECHNO</option>
                     </select>
-                    
-                    <label style="color:var(--gold); font-size:0.7rem; letter-spacing: 2px;">HI-RES MASTER (WAV ONLY)</label>
-                    <input type="file" id="audio-file" accept=".wav" onchange="handlePreview(this)">
-                    
-                    <div id="preview-box" class="player-2026">
-                        <p style="font-size: 0.7rem; color: var(--gold);">AUDIO DECRYPTED: READY FOR PLAYBACK</p>
-                        <audio id="player" controls></audio>
-                    </div>
-
-                    <label style="color:var(--gold); font-size:0.7rem; letter-spacing: 2px; margin-top: 20px; display: block;">3000px ARTWORK (SQUARE JPG)</label>
-                    <input type="file" id="cover-file" accept="image/*">
-
-                    <button class="btn" id="uploadBtn" onclick="processUpload()">PUSH TO GLOBAL STREAMS</button>
+                    <label style="color:var(--gold); font-size:0.75rem;">MASTER WAV FILE</label>
+                    <input type="file" accept=".wav" onchange="handlePreview(this)">
+                    <div id="preview-box" class="player-2026"><audio id="player" controls></audio></div>
+                    <label style="color:var(--gold); font-size:0.75rem;">3000px COVER ART</label>
+                    <input type="file" accept="image/*">
+                    <button class="btn" id="uploadBtn" onclick="processUpload()">Deploy to Believe Digital</button>
                 </div>
             </div>
 
             <div id="page-dashboard" class="page-layer">
-                <h2>Believe Backstage</h2>
+                <h2>Global Analytics</h2>
+                <div class="glass-card" style="text-align: center;">
+                    <p>Access Believe Backstage for real-time sales.</p>
+                    <a href="https://www.believebackstage.com" target="_blank" class="btn" style="width: auto; padding: 15px 50px;">LOGIN TO BACKSTAGE</a>
+                </div>
+            </div>
+
+            <div id="page-vibe" class="page-layer">
+                <h2>A&R Vibe Check</h2>
                 <div class="glass-card">
-                    <p>Direct integration with Believe Digital Distribution analytics.</p>
-                    <div class="inst-card" style="border: 2px solid var(--gold); background: rgba(212,175,55,0.1);">
-                        <p>Credentials Verified. Performance Data Synced.</p>
-                        <a href="https://www.believebackstage.com" target="_blank" class="btn" style="width: auto; padding: 10px 40px;">ACCESS BACKSTAGE</a>
-                    </div>
+                    <p>Describe the "Vibe" for your artwork and marketing assets.</p>
+                    <textarea placeholder="Colors, mood, influences..."></textarea>
+                    <button class="btn">Send to Creative Team</button>
                 </div>
             </div>
 
             <div id="page-rates" class="page-layer">
                 <h2>Elite Services</h2>
-                <div class="glass-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="inst-card">
-                        <h3>MIX/MASTER</h3>
-                        <p class="gold" style="font-size: 1.5rem; color: var(--gold);">R450</p>
-                    </div>
-                    <div class="inst-card">
-                        <h3>COVER ART</h3>
-                        <p class="gold" style="font-size: 1.5rem; color: var(--gold);">R200</p>
-                    </div>
+                <div class="inst-grid">
+                    <div class="inst-card"><h3>Mix & Master</h3><p style="color:var(--gold);">R450</p></div>
+                    <div class="inst-card"><h3>Cover Design</h3><p style="color:var(--gold);">R200</p></div>
                 </div>
             </div>
 
             <div id="page-admin" class="page-layer">
-                <h2 style="color: var(--accent-orange);">Admin Control Room</h2>
+                <h2 style="color: var(--accent-orange);">Admin Control</h2>
                 <div class="glass-card">
-                    <h3>Onboard New Artist</h3>
-                    <input type="text" id="adm-name" placeholder="Artist Stage Name">
-                    <input type="email" id="adm-email" placeholder="Contact Email">
-                    <button class="btn" style="background: var(--accent-orange);" onclick="alert('Artist Added to Database')">GENERATE PORTAL ACCESS</button>
+                    <input type="text" placeholder="Artist Name">
+                    <input type="email" placeholder="Artist Email">
+                    <button class="btn" style="background: var(--accent-orange);" onclick="alert('Artist Portal Active')">Create Artist Portal</button>
                 </div>
             </div>
 
@@ -237,9 +266,7 @@
     <script>
         const SDR_PASS = "SDR2026";
 
-        function focusPass() {
-            document.getElementById('pass-key').focus();
-        }
+        function focusPass() { document.getElementById('pass-key').focus(); }
 
         function authenticate() {
             if(document.getElementById('pass-key').value === SDR_PASS) {
@@ -248,15 +275,12 @@
                     document.getElementById('login-layer').classList.add('hidden');
                     document.getElementById('portal-shell').classList.remove('hidden');
                 }, 500);
-            } else { 
-                alert("IDENTITY NOT VERIFIED"); 
-            }
+            } else { alert("ACCESS DENIED"); }
         }
 
         function showPage(pageId) {
             document.querySelectorAll('.page-layer').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
             document.getElementById('page-' + pageId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
@@ -272,12 +296,11 @@
 
         async function processUpload() {
             const btn = document.getElementById('uploadBtn');
-            btn.innerText = "ENCRYPTING & UPLOADING...";
-            btn.style.opacity = "0.5";
+            btn.innerText = "ENCRYPTING RELEASE...";
             setTimeout(() => {
-                alert("RELEASE SYNCED. Distribution process started via Believe Backstage.");
-                btn.innerText = "PUSH COMPLETE";
-                btn.style.background = "linear-gradient(135deg, #00ff00, #008000)";
+                alert("SUCCESS: Release deployed to SDR distribution servers.");
+                btn.innerText = "SYNCED";
+                btn.style.background = "green";
             }, 3000);
         }
     </script>
