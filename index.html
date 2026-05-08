@@ -3,193 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR | Cinematic Distribution</title>
+    <title>SDR | Global Artist Dashboard</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
-        :root { 
-            --gold: #c5a059; 
-            --deep-gold: #996515;
-            --obsidian: #0a0a0a;
-            --glass: rgba(15, 12, 10, 0.9);
-            --border: rgba(197, 160, 89, 0.25);
+        :root {
+            --sdr-gold: #c5a059;
+            --bg-dark: #0c0c0c;
+            --panel-bg: #161616;
+            --border-gray: #2a2a2a;
+            --text-dim: #a0a0a0;
         }
 
         body {
-            margin: 0; font-family: 'Outfit', sans-serif;
-            background: var(--obsidian); color: #fff;
-            height: 100vh; overflow: hidden;
+            margin: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark); color: #fff;
+            display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* Animated Golden Background */
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #2a1f10 0%, #0a0a0a 70%);
-            z-index: -1;
+        /* Side Navigation Stack */
+        .sidebar {
+            width: 260px; background: #000; border-right: 1px solid var(--border-gray);
+            display: flex; flex-direction: column; padding: 20px;
         }
 
-        .app-shell { display: flex; height: 100vh; width: 100vw; padding: 25px; box-sizing: border-box; gap: 25px; }
+        .logo-area { padding: 20px 0; border-bottom: 1px solid var(--border-gray); margin-bottom: 20px; }
+        .logo-text { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; }
+        .logo-sub { font-size: 0.6rem; color: var(--sdr-gold); letter-spacing: 4px; }
 
-        /* Cinematic Sidebar */
-        .nav-sidebar { 
-            width: 300px; background: var(--glass); border-radius: 40px;
-            border: 1px solid var(--border); display: flex; flex-direction: column; 
-            padding: 40px; backdrop-filter: blur(40px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        .nav-group { margin-bottom: 30px; }
+        .nav-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .nav-link { 
+            padding: 12px; border-radius: 8px; cursor: pointer; color: #eee; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 10px; transition: 0.2s;
+        }
+        .nav-link:hover, .nav-link.active { background: var(--panel-bg); color: var(--sdr-gold); }
+
+        /* Main Content Stack */
+        .main-container { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        
+        .top-bar {
+            height: 70px; border-bottom: 1px solid var(--border-gray);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+            background: rgba(12,12,12,0.8); backdrop-filter: blur(10px);
         }
 
-        .nav-item { 
-            padding: 20px; margin-bottom: 15px; border-radius: 20px; cursor: pointer; 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: #888; display: flex; align-items: center; gap: 15px;
-            font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+        .content-body { padding: 40px; }
+
+        /* Data Grid (Stacked) */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--panel-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-gray); }
+        .stat-val { font-size: 1.8rem; font-weight: 800; display: block; margin: 10px 0; }
+        .stat-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+
+        /* Catalog Table */
+        .catalog-section { background: var(--panel-bg); border-radius: 15px; border: 1px solid var(--border-gray); overflow: hidden; }
+        .table-header { padding: 20px; border-bottom: 1px solid var(--border-gray); font-weight: 600; display: flex; justify-content: space-between; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; background: #1a1a1a; padding: 15px 20px; color: var(--text-dim); }
+        td { padding: 15px 20px; border-bottom: 1px solid var(--border-gray); }
+        .status-pill { padding: 4px 10px; border-radius: 100px; font-size: 0.65rem; background: rgba(197, 160, 89, 0.1); color: var(--sdr-gold); }
+
+        /* Partner/Info Block */
+        .info-footer { 
+            margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; 
+            padding: 30px; background: #111; border-radius: 15px; border-left: 4px solid var(--sdr-gold);
         }
+        .info-box h4 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--sdr-gold); }
+        .info-box p { font-size: 0.75rem; margin: 5px 0; color: #ccc; }
 
-        .nav-item:hover, .nav-item.active { 
-            background: linear-gradient(135deg, rgba(197, 160, 89, 0.2), transparent);
-            color: var(--gold); border: 1px solid var(--gold); transform: translateX(10px);
-        }
-
-        /* Main Stage */
-        .main-content { 
-            flex: 1; background: var(--glass); border-radius: 40px;
-            border: 1px solid var(--border); overflow-y: auto; 
-            padding: 60px; position: relative;
-        }
-
-        /* The Cinematic Release Form */
-        .release-stage { display: none; animation: slideUp 1s ease; }
-        .release-stage.active { display: block; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .form-step {
-            background: rgba(255,255,255,0.02); padding: 40px; border-radius: 30px;
-            border-left: 5px solid var(--gold); margin-bottom: 30px;
-        }
-
-        h2 { font-size: 3rem; font-weight: 900; letter-spacing: -2px; color: #fff; margin-bottom: 10px; }
-        .gold-text { color: var(--gold); text-transform: uppercase; letter-spacing: 5px; font-size: 0.7rem; display: block; margin-bottom: 20px; }
-
-        input, select { 
-            background: transparent; border: none; border-bottom: 2px solid var(--border);
-            width: 100%; padding: 15px 0; color: #fff; font-size: 1.2rem; margin-bottom: 30px;
-            outline: none; transition: 0.3s;
-        }
-        input:focus { border-bottom: 2px solid var(--gold); }
-
-        .btn-luxe {
-            padding: 25px 50px; background: linear-gradient(45deg, var(--deep-gold), var(--gold));
-            border: none; border-radius: 100px; color: #fff; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 4px; cursor: pointer; transition: 0.4s;
-            box-shadow: 0 10px 30px rgba(153, 101, 21, 0.3);
-        }
-        .btn-luxe:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(197, 160, 89, 0.5); }
-
-        /* Partner Module (Static Plastic) */
-        .partner-card {
-            background: linear-gradient(135deg, #1a1a1a, #000);
-            padding: 30px; border-radius: 25px; border: 1px solid var(--gold);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-text">SOUL DUST</div>
+            <div class="logo-sub">RECORDS WORLDWIDE</div>
+        </div>
 
-    <div class="app-shell" id="portal">
-        <aside class="nav-sidebar">
-            <div style="text-align: center; margin-bottom: 50px;">
-                <h1 style="font-weight: 100; letter-spacing: 10px; font-size: 1.5rem;">SOUL<span style="font-weight: 900; color: var(--gold);">DUST</span></h1>
-                <p style="font-size: 0.6rem; color: var(--gold); letter-spacing: 3px;">RECORDS WORLDWIDE</p>
-            </div>
-            <div class="nav-item active" onclick="tab('home')">Dashboard</div>
-            <div class="nav-item" onclick="tab('release')">New Submission</div>
-            <div class="nav-item" onclick="tab('static')">Static Plastic Sync</div>
-            <div class="nav-item" onclick="tab('royalty')">Financial Ledger</div>
-        </aside>
+        <div class="nav-group">
+            <span class="nav-label">Main Menu</span>
+            <div class="nav-link active">📊 Analytics Dashboard</div>
+            <div class="nav-link">💿 My Catalog</div>
+            <div class="nav-link">📤 Add New Release</div>
+        </div>
 
-        <main class="main-content">
-            <div id="tab-home" class="release-stage active">
-                <span class="gold-text">Welcome, Founder</span>
-                <h2>SDR Command Center</h2>
-                <div class="partner-card" style="margin-top: 40px;">
-                    <div>
-                        <h4 style="margin:0; color: var(--gold);">Static Plastic Partnership</h4>
-                        <p style="font-size: 0.8rem; opacity: 0.6;">Active Distribution Agreement: V2.0</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <span style="font-size: 1.5rem; font-weight: 900;">LIVE</span>
-                    </div>
+        <div class="nav-group">
+            <span class="nav-label">Accounting</span>
+            <div class="nav-link">💸 Royalties & Payments</div>
+            <div class="nav-link">📝 Tax & Bank Details</div>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-label">Distribution Bridge</span>
+            <div class="nav-link">🔗 Static Plastic Sync</div>
+            <div class="nav-link">🤖 System Architect (Gemini)</div>
+        </div>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <div style="color: var(--text-dim); font-size: 0.8rem;">Label Group: <b>Abantü Recordings (Pty) Ltd</b></div>
+            <button style="background: var(--sdr-gold); border: none; padding: 10px 20px; border-radius: 5px; font-weight: 700; cursor: pointer;">+ NEW SUBMISSION</button>
+        </header>
+
+        <div class="content-body">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Stream Earnings</span>
+                    <span class="stat-val">R 0.00</span>
+                    <span style="font-size: 0.6rem; color: #4caf50;">↑ 0% from last month</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Active Releases</span>
+                    <span class="stat-val">01</span>
+                    <span style="font-size: 0.6rem; color: var(--sdr-gold);">Live on 150+ Stores</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Top Market</span>
+                    <span class="stat-val" style="font-size: 1.2rem;">South Africa</span>
+                    <span style="font-size: 0.6rem;">Durban / KZN Hub</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Sync Status</span>
+                    <span class="stat-val" style="font-size: 1.2rem;">Connected</span>
+                    <span style="font-size: 0.6rem;">Static Plastic V2.0</span>
                 </div>
             </div>
 
-            <div id="tab-release" class="release-stage">
-                <span class="gold-text">Step 01: Metadata Mastery</span>
-                <h2>The Release Form</h2>
-                
-                <div class="form-step">
-                    <label class="gold-text">Primary Artist</label>
-                    <input type="text" id="artist" placeholder="Enter Full Artist Name">
-                    
-                    <label class="gold-text">Track Title</label>
-                    <input type="text" id="title" placeholder="Name of the Masterpiece">
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-                        <div>
-                            <label class="gold-text">Genre</label>
-                            <select id="genre">
-                                <option>Gqom</option>
-                                <option>Afro Tech</option>
-                                <option>Amapiano</option>
-                                <option>Afro House</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="gold-text">Catalogue Number</label>
-                            <input type="text" id="cat" placeholder="SDR001">
-                        </div>
-                    </div>
+            <div class="catalog-section">
+                <div class="table-header">
+                    <span>Active Catalog Management</span>
+                    <span style="font-size: 0.7rem; color: var(--text-dim);">Showing latest releases</span>
                 </div>
-
-                <div class="form-step">
-                    <label class="gold-text">Agreement Verification</label>
-                    <p style="font-size: 0.8rem; opacity: 0.7;">By submitting, you confirm this release adheres to the Static Plastic Digital Distribution Agreement (SA Law).</p>
-                    <button class="btn-luxe" onclick="deploy()">Seal & Deploy Release</button>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CAT #</th>
+                            <th>Release Title</th>
+                            <th>Artist/s</th>
+                            <th>Genre</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>SDR001</b></td>
+                            <td>Impumelelo</td>
+                            <td>Nontomby ft. Niipseedadust</td>
+                            <td>Afro House</td>
+                            <td><span class="status-pill">DISTRIBUTED</span></td>
+                            <td style="color: var(--sdr-gold); cursor: pointer;">View Asset</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <div id="tab-static" class="release-stage">
-                <span class="gold-text">Distributor Gateway</span>
-                <h2>Static Plastic Bridge</h2>
-                <div class="form-step" style="border-left-color: #fff;">
-                    <h3>Upload Royalty Statement</h3>
-                    <p style="opacity: 0.6;">Static Plastic can drop CSV/XLSX files here to update label earnings.</p>
-                    <div style="border: 2px dashed var(--border); padding: 50px; text-align: center; border-radius: 20px;">
-                        <input type="file" style="display:none" id="file-up">
-                        <button class="btn-luxe" style="background: transparent; border: 1px solid var(--gold);" onclick="document.getElementById('file-up').click()">Select Statement</button>
-                    </div>
+            <div class="info-footer">
+                <div class="info-box">
+                    <h4>LABEL ACCOUNT DETAILS</h4>
+                    <p><b>Company:</b> Abantü Recordings (Pty) Ltd</p>
+                    <p><b>Owner:</b> Sakhile Chiliza</p>
+                    <p><b>Bank:</b> Nedbank | 1337406198</p>
+                    <p><b>Location:</b> Newlands West, Durban, SA</p>
+                </div>
+                <div class="info-box">
+                    <h4>SYSTEM & PARTNER</h4>
+                    <p><b>Distributor:</b> Static Plastic Distribution</p>
+                    <p><b>Compliance:</b> 16-bit / 44.1kHz WAV Enforcement</p>
+                    <p><b>System Architect:</b> Gemini (AI-Enabled Label Ops)</p>
+                    <p><b>Build Version:</b> Elite Portal v2.0.26</p>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 
-    <script>
-        function tab(name) {
-            document.querySelectorAll('.release-stage').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-' + name).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        function deploy() {
-            const art = document.getElementById('artist').value;
-            if(!art) return alert("Please name the artist.");
-            alert("SDR ENGINE: Packaging " + art + " for Global Distribution via Static Plastic.");
-        }
-    </script>
 </body>
 </html>
