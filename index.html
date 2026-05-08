@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDR Elite | Power Portal 2026</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>SDR Elite | Advanced Power Portal 2026</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;900&display=swap');
 
@@ -12,271 +11,140 @@
             --gold: #c5a059; 
             --deep-gold: #996515;
             --accent-orange: #ff5f1f;
-            --glass: rgba(255, 255, 255, 0.8); /* Light Glass */
-            --card-bg: rgba(255, 255, 255, 0.6);
-            --text-dark: #1a1a1a;
-            --border-glow: rgba(197, 160, 89, 0.2);
+            --bg-base: #050505;
+            --glass: rgba(15, 15, 15, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-main: #f0f0f0;
+            --text-dim: #aaa;
+            --border: rgba(255,255,255,0.08);
+            --input-bg: #111;
         }
         
         body {
             margin: 0; font-family: 'Outfit', sans-serif; 
-            background: #fdfdfd url('elephant 19.jpg') no-repeat center center fixed; 
-            background-size: cover; color: var(--text-dark); height: 100vh; overflow: hidden;
+            background: var(--bg-base); color: var(--text-main); height: 100vh; overflow: hidden;
+            transition: 0.5s;
         }
 
-        /* 3D Glass Shell */
-        .app-shell { display: flex; height: 100vh; width: 100vw; gap: 20px; padding: 20px; box-sizing: border-box; }
-        
-        .nav-sidebar { 
-            width: 280px; background: var(--glass); border-radius: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; 
-            padding: 35px; backdrop-filter: blur(30px); box-shadow: 15px 15px 40px rgba(0,0,0,0.05);
-            overflow-y: auto;
-        }
+        .app-shell { display: flex; height: 100vh; width: 100vw; gap: 15px; padding: 15px; box-sizing: border-box; }
+        .nav-sidebar { width: 280px; background: var(--glass); border-radius: 30px; border: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px; backdrop-filter: blur(25px); }
+        .nav-item { padding: 14px; margin-bottom: 8px; border-radius: 15px; cursor: pointer; transition: 0.3s; color: var(--text-dim); display: flex; align-items: center; gap: 12px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .nav-item:hover, .nav-item.active { background: var(--input-bg); color: var(--gold); transform: translateX(5px); border: 1px solid var(--gold); }
 
-        .nav-item { 
-            padding: 16px; margin-bottom: 12px; border-radius: 18px; cursor: pointer; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            color: #666; display: flex; align-items: center; gap: 15px;
-            font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;
-            border: 1px solid transparent; text-transform: uppercase;
-        }
-        .nav-item:hover, .nav-item.active { 
-            background: #ffffff;
-            color: var(--deep-gold); border: 1px solid var(--gold);
-            transform: scale(1.03); box-shadow: 0 8px 20px rgba(197, 160, 89, 0.15);
-        }
-
-        /* Light Theme Main Content */
-        .main-content { 
-            flex: 1; background: var(--glass); border-radius: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.5); overflow-y: auto; 
-            padding: 50px; backdrop-filter: blur(30px); position: relative;
-            box-shadow: 20px 20px 60px rgba(0,0,0,0.03);
-        }
-
-        .page-layer { display: none; animation: fadeIn 0.8s ease; }
+        .main-content { flex: 1; background: var(--glass); border-radius: 30px; border: 1px solid var(--border); overflow-y: auto; padding: 40px; backdrop-filter: blur(25px); position: relative; }
+        .page-layer { display: none; animation: slideUp 0.5s ease-out; }
         .page-layer.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card { 
-            background: var(--card-bg); padding: 35px; border-radius: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.8); margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;
-        }
-        .glass-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 15px 35px rgba(197, 160, 89, 0.1); }
+        .glass-card { background: var(--card-bg); padding: 30px; border-radius: 25px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .form-module { display: none; }
+        .form-module.active { display: block; }
+        .module-indicator { display: flex; gap: 10px; margin-bottom: 30px; }
+        .step-dot { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+        .step-dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
 
-        h2 { 
-            font-size: 2.2rem; color: var(--text-dark); text-transform: uppercase; 
-            letter-spacing: 6px; margin-bottom: 30px; font-weight: 900;
-        }
+        label { display: block; font-size: 0.7rem; font-weight: 900; margin-bottom: 8px; color: var(--gold); text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 12px; font-family: inherit; box-sizing: border-box; }
 
-        input, select, textarea { 
-            width: 100%; padding: 18px; margin-bottom: 20px; background: rgba(255,255,255,0.9); 
-            border: 1px solid #eee; color: var(--text-dark); border-radius: 15px; font-size: 1rem;
-        }
-        input:focus { border-color: var(--gold); outline: none; background: #fff; }
-
-        /* Elegant Button */
-        .btn { 
-            width: 100%; padding: 20px; background: linear-gradient(135deg, #1a1a1a, #444);
-            border: none; border-radius: 50px; font-weight: 600; cursor: pointer; 
-            color: #fff; text-transform: uppercase; letter-spacing: 3px; transition: 0.4s;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .btn:hover { background: var(--deep-gold); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(197, 160, 89, 0.3); }
-
-        .icon-3d { width: 35px; height: 35px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; box-shadow: 3px 3px 0 var(--gold); }
-
-        /* Modern Pipeline */
-        .pipeline-container { display: flex; justify-content: space-between; margin-top: 40px; position: relative; }
-        .pipeline-step { text-align: center; flex: 1; z-index: 2; font-size: 0.7rem; color: #888; text-transform: uppercase; }
-        .dot { width: 14px; height: 14px; background: #ddd; border-radius: 50%; margin: 0 auto 10px; border: 4px solid #fff; transition: 0.5s; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-        .active-dot { background: var(--accent-orange); box-shadow: 0 0 15px var(--accent-orange); }
-        .pipeline-line { position: absolute; top: 10px; left: 12%; right: 12%; height: 2px; background: #eee; z-index: 1; }
-
-        /* Floating Assistant - Soft Glow */
-        .ai-assistant {
-            position: fixed; bottom: 40px; right: 40px; width: 65px; height: 65px;
-            background: #fff; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            z-index: 1000; border: 1px solid var(--gold); transition: 0.3s;
-        }
-        .ai-assistant:hover { transform: scale(1.1) rotate(5deg); }
+        .btn { padding: 18px 35px; border: none; border-radius: 50px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; background: linear-gradient(135deg, var(--gold), var(--deep-gold)); color: #fff; width: 100%; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        
+        /* AI Chat UI */
+        #ai-log { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); font-size: 0.9rem; }
+        .ai-msg { color: var(--gold); margin-bottom: 10px; }
+        .user-msg { color: #fff; margin-bottom: 10px; text-align: right; }
 
         .hidden { display: none !important; }
-        .inst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-        .inst-card { background: #fff; padding: 25px; border-radius: 20px; text-align: center; border: 1px solid #f0f0f0; text-decoration: none; color: var(--text-dark); transition: 0.3s; font-weight: 600; }
-        .inst-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-
-        /* Audio Player Light */
-        .player-2026 { background: #f9f9f9; border-radius: 25px; padding: 25px; border: 1px solid #eee; margin: 20px 0; }
-        audio { width: 100%; height: 40px; }
-
-        /* Logo Glow */
-        .logo-main { filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.2)); }
+        .link-pill { background: var(--input-bg); padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <div class="ai-assistant" onclick="alert('Hello! I am your SDR Concierge. How can I assist your career today?')">
-        <span style="font-size: 1.5rem;">✨</span>
-    </div>
-
-    <div id="login-layer" style="position:fixed; inset:0; background:#fff url('elephant 19.jpg') no-repeat center center; background-size: cover; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
-        <div style="background: rgba(255,255,255,0.85); padding: 60px; border-radius: 40px; backdrop-filter: blur(20px); border: 1px solid #fff; box-shadow: 0 30px 60px rgba(0,0,0,0.1);">
-            <img src="Soul Dust.png" height="100" class="logo-main" onclick="focusPass()">
-            <h1 style="letter-spacing: 8px; color: var(--text-dark); margin-top: 30px; font-weight: 200;">SDR <span style="font-weight: 900; color: var(--gold);">ELITE</span></h1>
-            <p style="font-size: 0.8rem; letter-spacing: 3px; color: #888; margin-bottom: 30px;">THE FUTURE OF AFRICAN SOUND</p>
-            <input type="password" id="pass-key" placeholder="ACCESS KEY" style="width: 250px; text-align: center; border: 1px solid #ddd; background: #fff;">
-            <br>
-            <button class="btn" style="width: 250px;" onclick="authenticate()">Enter Portal</button>
+    <div id="login-layer" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center;">
+        <div class="glass-card" style="width: 350px;">
+            <h1 style="letter-spacing: 5px; font-weight: 200;">SDR <span style="font-weight: 900;">ELITE</span></h1>
+            <input type="password" id="pass-key" placeholder="ACCESS KEY" style="text-align: center;">
+            <button class="btn" onclick="authenticate()">Unleash Power</button>
         </div>
     </div>
 
     <div class="app-shell hidden" id="portal-shell">
         <nav class="nav-sidebar">
-            <img src="Soul Dust.png" height="40" style="margin-bottom: 50px; align-self: center;">
-            
-            <div class="nav-item active" onclick="showPage('home')"><i class="icon-3d">🏠</i> Home</div>
-            <div class="nav-item" onclick="showPage('upload')"><i class="icon-3d">🚀</i> Release</div>
-            <div class="nav-item" onclick="showPage('institutions')"><i class="icon-3d">🌍</i> Copyright</div>
-            <div class="nav-item" onclick="showPage('academy')"><i class="icon-3d">🎓</i> Academy</div>
-            <div class="nav-item" onclick="showPage('promote')"><i class="icon-3d">📣</i> Promo</div>
-            <div class="nav-item" onclick="showPage('dashboard')"><i class="icon-3d">📈</i> Data</div>
-            <div class="nav-item" onclick="showPage('vibe')"><i class="icon-3d">🎨</i> Vibe</div>
-            <div class="nav-item" onclick="showPage('rates')"><i class="icon-3d">💎</i> Luxe</div>
-            
-            <div style="margin-top: auto; padding-top: 20px;">
-                <div class="nav-item" onclick="showPage('admin')" style="color: var(--accent-orange);">
-                    <i class="icon-3d" style="box-shadow: 3px 3px 0 var(--accent-orange);">👑</i> Admin
-                </div>
-            </div>
+            <h2 style="color: var(--gold); text-align: center; letter-spacing: 3px;">SDR</h2>
+            <div class="nav-item active" onclick="showPage('home')">🏠 Hub</div>
+            <div class="nav-item" onclick="showPage('upload')">🚀 Release</div>
+            <div class="nav-item" onclick="showPage('promote')">📣 Promo</div>
+            <div class="nav-item" onclick="showPage('ai')">🤖 AI Concierge</div>
         </nav>
 
         <main class="main-content">
-            
             <div id="page-home" class="page-layer active">
-                <h2>Welcome, Artist</h2>
+                <h2>Elite Dashboard</h2>
                 <div class="glass-card">
-                    <h3 style="font-weight: 400;">Release Status</h3>
-                    <div class="pipeline-container">
-                        <div class="pipeline-line"></div>
-                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Ready</small></div>
-                        <div class="pipeline-step"><div class="dot active-dot"></div><small>Review</small></div>
-                        <div class="pipeline-step"><div class="dot"></div><small>Sync</small></div>
-                        <div class="pipeline-step"><div class="dot"></div><small>Live</small></div>
-                    </div>
-                </div>
-                <div class="inst-grid">
-                    <div class="glass-card" style="margin-bottom:0">
-                        <h4 style="margin:0; color: var(--gold);">Global Reach</h4>
-                        <p style="font-size: 1.8rem; font-weight: 900; margin: 10px 0;">+124%</p>
-                        <small>Monthly Listeners</small>
-                    </div>
-                    <div class="glass-card" style="margin-bottom:0">
-                        <h4 style="margin:0; color: var(--gold);">Revenue</h4>
-                        <p style="font-size: 1.8rem; font-weight: 900; margin: 10px 0;">Elite</p>
-                        <small>Artist Tier Status</small>
+                    <h3>Status: <span style="color: var(--gold);">2026 Sync Active</span></h3>
+                    <div style="display: flex; gap: 20px; margin-top: 20px;">
+                        <div style="flex: 1; text-align: center;"><h1>14</h1><small>Live Tracks</small></div>
+                        <div style="flex: 1; text-align: center; border-left: 1px solid var(--border);"><h1>R2.4k</h1><small>Royalties</small></div>
                     </div>
                 </div>
             </div>
 
             <div id="page-upload" class="page-layer">
-                <h2>New Release</h2>
+                <h2>Release Push</h2>
+                <div class="module-indicator">
+                    <div class="step-dot active" id="dot-1"></div>
+                    <div class="step-dot" id="dot-2"></div>
+                </div>
                 <div class="glass-card">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <input type="text" id="up-artist" placeholder="Artist Name">
-                        <input type="text" id="up-title" placeholder="Song Title">
+                    <div class="form-module active" id="module-a">
+                        <label>Primary Artist</label><input type="text" id="m-artist" placeholder="Nontomby">
+                        <label>Track Title</label><input type="text" id="m-title" placeholder="Impumelelo">
+                        <button class="btn" onclick="nextModule(2)">Next: Metadata</button>
                     </div>
-                    <select id="up-genre">
-                        <option>Ammapiano</option>
-                        <option>Afro House</option>
-                        <option>Gqom</option>
-                    </select>
-                    <p style="font-size: 0.7rem; color: #888;">UPLOAD MASTER (WAV)</p>
-                    <input type="file" accept=".wav" onchange="handlePreview(this)">
-                    <div id="preview-box" class="player-2026" style="display:none;"><audio id="player" controls></audio></div>
-                    <button class="btn" id="uploadBtn" onclick="processUpload()">Deploy to Stores</button>
-                </div>
-            </div>
-
-            <div id="page-institutions" class="page-layer">
-                <h2>Royalties & Rights</h2>
-                <div class="inst-grid">
-                    <a href="https://portal.samro.org.za" target="_blank" class="inst-card">SAMRO</a>
-                    <a href="https://portal.capasso.co.za" target="_blank" class="inst-card">CAPASSO</a>
-                    <a href="#" class="inst-card">SAMPRA</a>
-                    <a href="#" class="inst-card">RiSA</a>
-                </div>
-            </div>
-
-            <div id="page-academy" class="page-layer">
-                <h2>Elite Academy</h2>
-                <div class="glass-card" style="height: 300px; display: flex; align-items: center; justify-content: center; background: #eee;">
-                    <p style="color: #666;">Video: The Art of Artist Branding (2026)</p>
+                    <div class="form-module" id="module-b">
+                        <label>Composers</label><input type="text" id="m-composer" placeholder="Sakhile Chiliza">
+                        <label>Genre</label>
+                        <select id="m-genre"><option>Afro House</option><option>Amapiano</option></select>
+                        <button class="btn" onclick="finalizeRelease()">Generate & Download CSV</button>
+                    </div>
                 </div>
             </div>
 
             <div id="page-promote" class="page-layer">
-                <h2>Promo Tools</h2>
+                <h2>Smart Link Scraper</h2>
                 <div class="glass-card">
-                    <h3>Smart Link Creator</h3>
-                    <input type="text" placeholder="Spotify Link">
-                    <button class="btn">Generate Link</button>
+                    <label>Spotify Link</label>
+                    <input type="text" id="sp-url" placeholder="https://open.spotify.com/track/...">
+                    <button class="btn" id="scrape-btn" onclick="runScraper()">Generate Multi-Links</button>
+                    <div id="link-results" style="margin-top: 20px;"></div>
                 </div>
             </div>
 
-            <div id="page-dashboard" class="page-layer">
-                <h2>Analytics</h2>
-                <div class="glass-card" style="text-align: center;">
-                    <p>Connected via Believe Digital.</p>
-                    <a href="https://www.believebackstage.com" target="_blank" class="btn" style="width: auto; padding: 15px 40px;">Open Backstage</a>
-                </div>
-            </div>
-
-            <div id="page-vibe" class="page-layer">
-                <h2>Vibe Check</h2>
+            <div id="page-ai" class="page-layer">
+                <h2>AI Label Manager</h2>
                 <div class="glass-card">
-                    <p>Describe the visual direction of your next project.</p>
-                    <textarea rows="5" placeholder="Dreamy, futuristic, organic..."></textarea>
-                    <button class="btn">Submit to Creative</button>
+                    <div id="ai-log">
+                        <div class="ai-msg">SDR AI: Ready to assist with your release strategy.</div>
+                    </div>
+                    <input type="text" id="ai-query" placeholder="Ask about SAMRO, Promo, or Trends...">
+                    <button class="btn" id="ai-exec" onclick="talkToAI()">Send to Brain</button>
                 </div>
             </div>
-
-            <div id="page-rates" class="page-layer">
-                <h2>Premium Services</h2>
-                <div class="inst-grid">
-                    <div class="inst-card">Mix & Master<br><span style="color:var(--gold)">R450</span></div>
-                    <div class="inst-card">Cover Art<br><span style="color:var(--gold)">R200</span></div>
-                </div>
-            </div>
-
-            <div id="page-admin" class="page-layer">
-                <h2>System Admin</h2>
-                <div class="glass-card">
-                    <input type="text" placeholder="New Artist Name">
-                    <button class="btn" style="background: var(--accent-orange);">Onboard Artist</button>
-                </div>
-            </div>
-
         </main>
     </div>
 
     <script>
-        const SDR_PASS = "SDR2026";
-
-        function focusPass() { document.getElementById('pass-key').focus(); }
+        const CONFIG = {
+            SDR_PASS: "SDR2026",
+            OPENAI_KEY: "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"
+        };
 
         function authenticate() {
-            if(document.getElementById('pass-key').value === SDR_PASS) {
-                document.getElementById('login-layer').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('login-layer').classList.add('hidden');
-                    document.getElementById('portal-shell').classList.remove('hidden');
-                }, 500);
-            } else { alert("AUTHENTICATION FAILED"); }
+            if(document.getElementById('pass-key').value === CONFIG.SDR_PASS) {
+                document.getElementById('login-layer').classList.add('hidden');
+                document.getElementById('portal-shell').classList.remove('hidden');
+            } else { alert("Access Denied"); }
         }
 
         function showPage(pageId) {
@@ -286,23 +154,83 @@
             event.currentTarget.classList.add('active');
         }
 
-        function handlePreview(input) {
-            const player = document.getElementById('player');
-            const box = document.getElementById('preview-box');
-            if (input.files[0]) {
-                player.src = URL.createObjectURL(input.files[0]);
-                box.style.display = 'block';
-            }
+        function nextModule(step) {
+            document.querySelectorAll('.form-module').forEach(m => m.classList.remove('active'));
+            document.getElementById('module-' + (step === 2 ? 'b' : 'a')).classList.add('active');
+            document.getElementById('dot-2').classList.toggle('active', step === 2);
         }
 
-        async function processUpload() {
-            const btn = document.getElementById('uploadBtn');
-            btn.innerText = "UPLOADING...";
-            setTimeout(() => {
-                alert("Success! Your music has been sent for distribution.");
-                btn.innerText = "SUCCESS";
-                btn.style.background = "#4CAF50";
-            }, 3000);
+        // --- REAL AI INTEGRATION ---
+        async function talkToAI() {
+            const input = document.getElementById('ai-query');
+            const log = document.getElementById('ai-log');
+            const btn = document.getElementById('ai-exec');
+            const userMsg = input.value;
+            if(!userMsg) return;
+
+            log.innerHTML += `<div class="user-msg">User: ${userMsg}</div>`;
+            input.value = "";
+            btn.innerText = "THINKING...";
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${CONFIG.OPENAI_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            {role: "system", content: "You are the SDR Elite AI. You help Afro House artists with distribution, SAMRO registration, and marketing strategy. Be concise and professional."},
+                            {role: "user", content: userMsg}
+                        ]
+                    })
+                });
+                const data = await response.json();
+                log.innerHTML += `<div class="ai-msg">SDR AI: ${data.choices[0].message.content}</div>`;
+                log.scrollTop = log.scrollHeight;
+            } catch (e) {
+                log.innerHTML += `<div style="color:red">Error: AI Brain Connection Failed.</div>`;
+            }
+            btn.innerText = "SEND TO BRAIN";
+        }
+
+        // --- SMART LINK SCRAPER ---
+        async function runScraper() {
+            const url = document.getElementById('sp-url').value;
+            const resDiv = document.getElementById('link-results');
+            const btn = document.getElementById('scrape-btn');
+
+            if(!url.includes('spotify')) return alert("Enter a valid Spotify URL");
+            btn.innerText = "SCANNING GLOBAL STORES...";
+            resDiv.innerHTML = "";
+
+            try {
+                const response = await fetch(`https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                ['appleMusic', 'youtube', 'deezer', 'tidal'].forEach(p => {
+                    if(data.linksByPlatform[p]) {
+                        resDiv.innerHTML += `<div class="link-pill"><span>${p.toUpperCase()}</span><a href="${data.linksByPlatform[p].url}" target="_blank" style="color:var(--gold)">LINK</a></div>`;
+                    }
+                });
+                btn.innerText = "DONE";
+            } catch (e) { alert("Song not live on all stores yet."); btn.innerText = "RETRY"; }
+        }
+
+        // --- CSV EXPORTER ---
+        function finalizeRelease() {
+            const rows = [
+                ["Label", "Artist", "Title", "Composer", "Genre"],
+                ["Soul Dust Records", document.getElementById('m-artist').value, document.getElementById('m-title').value, document.getElementById('m-composer').value, document.getElementById('m-genre').value]
+            ];
+            let csv = rows.map(r => r.join(",")).join("\n");
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `SDR_2026_${document.getElementById('m-title').value}.csv`;
+            a.click();
+            alert("Metadata Synced. File saved for Static Plastic.");
         }
     </script>
 </body>
